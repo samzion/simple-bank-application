@@ -43,9 +43,13 @@ public class LoanService {
                         WHERE account_id = ?
                        """;
         PreparedStatement statement = connection.prepareStatement(query);
+
         statement.setInt(1, account1.getId());
+
         ResultSet rs = statement.executeQuery();
+
         List<Loan> loans = new ArrayList<>();
+
         while(true){
             if(rs.next()){
                 Loan loan = new Loan();
