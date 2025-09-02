@@ -3,28 +3,8 @@ package oop.models.requests;
 import oop.models.entities.User;
 
 public class UserLoginRequest {
-    private String firstName;
-    private String lastName;
     private String email;
-    private String address;
-    private  String gender;
     private String password;
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public String getEmail() {
         return email;
@@ -34,21 +14,6 @@ public class UserLoginRequest {
         this.email = email;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 
     public String getPassword() {
         return password;
@@ -58,45 +23,17 @@ public class UserLoginRequest {
         this.password = password;
     }
 
-    public static String validate(UserLoginRequest userCreationRequest){
-        if(userCreationRequest == null){
-            return "User creation request cannot be null";
+    public static String validate(UserLoginRequest userLoginRequest){
+        if(userLoginRequest == null){
+            return "User login request cannot be null";
         }
-        if(userCreationRequest.getFirstName() == null || userCreationRequest.getFirstName().isEmpty()){
-            return "First name cannot be null or empty";
-        }
-        if(userCreationRequest.getLastName() == null || userCreationRequest.getLastName().isEmpty()){
-            return "Last name cannot be null or empty";
-        }
-        if(userCreationRequest.getGender() == null || userCreationRequest.getGender().isEmpty()){
-            return "Gender cannot be null or empty";
-        }
-        if(!(userCreationRequest.getGender().equalsIgnoreCase("M") || userCreationRequest.getGender().equalsIgnoreCase("F"))){
-            return "Gender can either be M or F";
-        }
-        if(userCreationRequest.getAddress() == null || userCreationRequest.getAddress().isEmpty()){
-            return "Address cannot be null or empty";
-        }
-        if(userCreationRequest.getPassword() == null ||userCreationRequest.getPassword().isEmpty()){
+        if(userLoginRequest.getPassword() == null ||userLoginRequest.getPassword().isEmpty()){
             return "Password cannot be null or empty";
         }
-        final String regularExpression = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,100}$";
-        if(!userCreationRequest.getPassword().matches(regularExpression)){
-            return "Password should be at least 8 characters and contains at least one uppercase, at least one lower case and at least a number.";
+        if(userLoginRequest.getEmail() == null ||userLoginRequest.getEmail().isEmpty()){
+            return "Email cannot be null or empty";
         }
 
-        return "User creation request okay!";
-    }
-
-    public static User createUserObject(UserLoginRequest userCreationRequest){
-        User user = new User();
-
-        user.setFirstName(userCreationRequest.getFirstName());
-        user.setLastName(userCreationRequest.getLastName());
-        user.setEmail(userCreationRequest.getEmail());
-        user.setAddress(userCreationRequest.getAddress());
-        user.setGender(userCreationRequest.getGender());
-        user.setPassword(userCreationRequest.getPassword());
-        return user;
+        return "User login request okay!";
     }
 }

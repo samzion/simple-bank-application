@@ -3,18 +3,28 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import oop.db.DataBaseConnection;
+import oop.db.migrations.MigrationRunner;
 import oop.httpHandlers.UserCreationHandler;
+import oop.httpHandlers.UserLoginHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class SimpleBankRestApiApplication {
 
     // http(s)://host:port/create-user?firstName=kayode&lastName
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
+
+        Connection connection = DataBaseConnection.getConnection();
+
+        MigrationRunner migrationRunner = new MigrationRunner();
+        migrationRunner.runMigrations(connection);
         try {
             // Create an HttpServer instance
             HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
@@ -23,6 +33,7 @@ public class SimpleBankRestApiApplication {
             server.createContext("/", new MyHandler());
             //TODO: Create a landing page path called homeHandler to return all the APIs that is supported.
             server.createContext("/create-user", new UserCreationHandler());
+            server.createContext("/user-login", new UserLoginHandler());
             server.createContext("/search", new SearchHandler());
 
             // Start the server

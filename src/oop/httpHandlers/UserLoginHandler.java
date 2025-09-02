@@ -7,6 +7,7 @@ import com.sun.net.httpserver.HttpHandler;
 import oop.SimpleBankRestApiApplication;
 import oop.models.entities.User;
 import oop.models.requests.UserCreationRequest;
+import oop.models.requests.UserLoginRequest;
 import oop.others.LocalDateTimeAdapter;
 import oop.services.UserService;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class UserLoginHandler implements HttpHandler {
     @Override
@@ -32,20 +34,25 @@ public class UserLoginHandler implements HttpHandler {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
-        UserCreationRequest userCreationRequest = gson.fromJson(body, UserCreationRequest.class);
-        String validationMessage = UserCreationRequest.validate(userCreationRequest);
-        if(!validationMessage.equals("User creation request okay!")){
+        UserLoginRequest userLoginRequest = gson.fromJson(body, UserLoginRequest.class);
+        String validationMessage = UserLoginRequest.validate(userLoginRequest);
+        if(!validationMessage.equals("User login request okay!")){
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, validationMessage);
             return;
         }
-        User newCreatedUser= null;
+        User existingUser;
         try {
             UserService userService = new UserService();
-            newCreatedUser = userService.createUser(userCreationRequest);
-            if(newCreatedUser == null){
-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unable to create user");
-            } else {
-                String jsonResponse = gson.toJson(newCreatedUser);
+            existingUser = userService.confirmUserLoginDetails(userLoginRequest.getEmail(), userLoginRequest.getPassword());
+
+            if(existingUser == null){
+                SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, "Incorrect login details");
+            }else {
+                String uuid = UUID.randomUUID().toString().replace("-", "");
+                existingUser.setUserToken(uuid);
+                userService.updateToken(existingUser);
+                existingUser.setPassword(null);
+                String jsonResponse = gson.toJson(existingUser);
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, jsonResponse);
             }
         } catch (Exception e) {

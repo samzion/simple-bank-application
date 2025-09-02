@@ -23,6 +23,28 @@ public class UserService {
 
     }
 
+    private User getUserDetailsByEmail(String email) throws SQLException {
+        String queryLoginDetails = "SELECT * FROM users WHERE email = ?";
+        PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);
+        pStatement.setString(1, email);
+        ResultSet rs = pStatement.executeQuery();
+        User user=null;
+        if(rs.next()){
+            user = new User();
+            System.out.println("A user with this email and password exist.");
+            user.setId( rs.getInt("id")) ;
+            user.setFirstName(rs.getString("firstname"));
+            user.setLastName(rs.getString("lastname"));
+            user.setAddress(rs.getString("address"));
+            user.setEmail(rs.getString("email"));
+            user.setGender(rs.getString("gender"));
+            user.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+            user.setUpdatedOn(rs.getTimestamp("updated_on").toLocalDateTime());
+            return  user;
+        }
+        return user;
+    }
+
     public boolean createUser(User user) throws SQLException {
         boolean flag = false;
         //check if email exist in database before
@@ -61,8 +83,11 @@ public class UserService {
         pStatement.setString(1, email);
         pStatement.setString(2, password);
         ResultSet rs = pStatement.executeQuery();
-        User user = new User( );
+
+        User user =  null;
+
         if(rs.next()){
+            user = new User();
             System.out.println("A user with this email and password exist.");
             user.setId( rs.getInt("id")) ;
             user.setFirstName(rs.getString("firstname"));
@@ -78,13 +103,38 @@ public class UserService {
         return user;
     }
 
-    public User getUserDetailsByEmail(String email) throws SQLException {
-        String queryLoginDetails = "SELECT * FROM users WHERE email = ?";
+    public String confirmUserEmail(String email) throws SQLException {
+        String queryEmail = "SELECT * FROM users WHERE email = ?";
+        PreparedStatement pStatementEmail = connection.prepareStatement(queryEmail);
+        pStatementEmail.setString(1, email);
+        ResultSet rsEmail = pStatementEmail.executeQuery();
+        User user = new User();
+        if(rsEmail == null){
+           return "A user with this email does not exist";
+//        } else {
+//            rsEmail.next();
+//                System.out.println("A user with this email and password exist.");
+//                user.setId( rsEmail.getInt("id")) ;
+//                user.setFirstName(rsEmail.getString("firstname"));
+//                user.setLastName(rsEmail.getString("lastname"));
+//                user.setAddress(rsEmail.getString("address"));
+//                user.setEmail(rsEmail.getString("email"));
+//                user.setPassword(rsEmail.getString("password"));
+//                user.setGender(rsEmail.getString("gender"));
+//                user.setCreatedOn(rsEmail.getTimestamp("created_on").toLocalDateTime());
+//                user.setUpdatedOn(rsEmail.getTimestamp("updated_on").toLocalDateTime());
+        }
+        return "A user with this email exist";
+    }
+
+    public User getUserDetailsByUserToken(String userToken) throws SQLException {
+        String queryLoginDetails = "SELECT * FROM users WHERE user_token = ?";
         PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);
-        pStatement.setString(1, email);
+        pStatement.setString(1, userToken);
         ResultSet rs = pStatement.executeQuery();
-        User user = new User( );
+        User user=null;
         if(rs.next()){
+            user = new User();
             System.out.println("A user with this email and password exist.");
             user.setId( rs.getInt("id")) ;
             user.setFirstName(rs.getString("firstname"));
@@ -97,5 +147,13 @@ public class UserService {
             return  user;
         }
         return user;
+    }
+
+    public void updateToken(User existingUser) throws SQLException {
+        String sql = "UPDATE users SET user_token = ? WHERE id = ?";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, existingUser.getUserToken());
+        statement.setInt(2, existingUser.getId());
+        statement.executeUpdate();
     }
 }

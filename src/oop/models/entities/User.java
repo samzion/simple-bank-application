@@ -12,6 +12,7 @@ public class User {
     private String password;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
+    private String userToken;
 //TODO: all entities must have createdON and updatedON properties
 
     public User(){
@@ -28,6 +29,7 @@ public class User {
         this.address = user.getAddress();
         this.createdOn = user.getCreatedOn();
         this.updatedOn = user.getUpdatedOn();
+        this.userToken=user.getUserToken();
     }
 
     public User(String firstName, String lastName, String gender, String email, String address, String password) {
@@ -111,6 +113,16 @@ public class User {
     public void setUpdatedOn(LocalDateTime updatedOn) {
         this.updatedOn = updatedOn;
     }
+
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
+    }
+
 
     public  String toString(){
         return String.format("firstName: %s, \nlastName: %s, \ngender: %s, \nemail: %s",firstName,lastName,gender,email);

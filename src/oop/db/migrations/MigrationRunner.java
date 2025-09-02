@@ -14,6 +14,7 @@ public class MigrationRunner {
         migrations.add(new AccountMigration());
         migrations.add(new TransactionMigration());
         migrations.add(new LoanMigration());
+        migrations.add(new AddUserTokenMigration());
     }
 
     public void runMigrations(Connection conn) throws SQLException {
