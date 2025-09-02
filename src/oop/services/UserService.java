@@ -1,7 +1,8 @@
 package oop.services;
 
 import oop.db.DataBaseConnection;
-import oop.models.User;
+import oop.models.entities.User;
+import oop.models.requests.UserCreationRequest;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,15 @@ public class UserService {
 
     public UserService() throws SQLException, ClassNotFoundException {
        connection = DataBaseConnection.getConnection();
+    }
+
+    public User createUser(UserCreationRequest userCreationRequest) throws SQLException {
+        User user = UserCreationRequest.createUserObject(userCreationRequest);
+        if(createUser(user)){
+            return getUserDetailsByEmail(user.getEmail());
+        }
+        return  null;
+
     }
 
     public boolean createUser(User user) throws SQLException {
@@ -60,6 +70,27 @@ public class UserService {
             user.setAddress(rs.getString("address"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
+            user.setGender(rs.getString("gender"));
+            user.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+            user.setUpdatedOn(rs.getTimestamp("updated_on").toLocalDateTime());
+            return  user;
+        }
+        return user;
+    }
+
+    public User getUserDetailsByEmail(String email) throws SQLException {
+        String queryLoginDetails = "SELECT * FROM users WHERE email = ?";
+        PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);
+        pStatement.setString(1, email);
+        ResultSet rs = pStatement.executeQuery();
+        User user = new User( );
+        if(rs.next()){
+            System.out.println("A user with this email and password exist.");
+            user.setId( rs.getInt("id")) ;
+            user.setFirstName(rs.getString("firstname"));
+            user.setLastName(rs.getString("lastname"));
+            user.setAddress(rs.getString("address"));
+            user.setEmail(rs.getString("email"));
             user.setGender(rs.getString("gender"));
             user.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
             user.setUpdatedOn(rs.getTimestamp("updated_on").toLocalDateTime());

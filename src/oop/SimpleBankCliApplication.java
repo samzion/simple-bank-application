@@ -7,7 +7,7 @@ import oop.screens.WelcomeScreen;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SimpleBankApplication {
+public class SimpleBankCliApplication {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Connection connection = DataBaseConnection.getConnection();
 

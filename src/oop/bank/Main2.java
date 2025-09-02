@@ -1,9 +1,5 @@
 package oop.bank;
 
-import oop.models.Account;
-import oop.TransferProcessor;
-import oop.models.User;
-
 public class Main2 {
 //    public  static void main(String[] args){
 //        User samsonUser = new User("SamsonBank", "Central account", "M", "Lagos");

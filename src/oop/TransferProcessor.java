@@ -4,7 +4,7 @@ import oop.bank.GTBTransfer;
 import oop.bank.DefaultTransfer;
 import oop.bank.ITransfer;
 import oop.bank.UBATransfer;
-import oop.models.Account;
+import oop.models.entities.Account;
 
 import java.util.ArrayList;
 import java.util.List;

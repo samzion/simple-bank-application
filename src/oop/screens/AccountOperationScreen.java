@@ -1,7 +1,7 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
-import oop.models.Account;
+import oop.SimpleBankCliApplication;
+import oop.models.entities.Account;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class AccountOperationScreen {
 
     public static void show(Account account) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         Scanner scanner =  new Scanner(System.in);
         System.out.println("What kind of operation would you want to perform?");
         int userInput;

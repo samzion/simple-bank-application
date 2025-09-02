@@ -1,4 +1,4 @@
-package oop.models;
+package oop.models.entities;
 import oop.TransactionType;
 import oop.TransferProcessor;
 import oop.bank.DefaultTransfer;
@@ -164,8 +164,6 @@ public class Account {
     }
 
     public boolean payLoan(double amount, Account lenderAccount) throws SQLException, ClassNotFoundException {
-        double initialAmountToBePaid = amount;
-        double amountUpdatedAfterPayment = amount;
         DefaultTransfer transferLoan = new DefaultTransfer();
         AccountService accountService = new AccountService();
         LoanService loanService = new LoanService();

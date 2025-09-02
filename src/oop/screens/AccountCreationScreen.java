@@ -1,17 +1,15 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
-import oop.models.Account;
-import oop.models.User;
+import oop.SimpleBankCliApplication;
+import oop.models.entities.User;
 import oop.services.AccountService;
 
 import java.sql.SQLException;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class AccountCreationScreen {
     public static boolean createAccount(User user) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         Random random = new Random();
         while(true){
             String accountNumber = String.valueOf(random.nextLong(1000000000,1100000000));
@@ -25,3 +23,4 @@ public class AccountCreationScreen {
         }
     }
 }
+//TODO: try and catch exception to catch duplicate account numbers

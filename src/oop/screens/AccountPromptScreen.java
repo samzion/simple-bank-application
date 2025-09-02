@@ -1,8 +1,8 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
-import oop.models.Account;
-import oop.models.User;
+import oop.SimpleBankCliApplication;
+import oop.models.entities.Account;
+import oop.models.entities.User;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class AccountPromptScreen {
 
     public static void show(User user) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
 
         System.out.println("Dear " + user.getFirstName() +"," );
         System.out.println("What will you like me to do for you?");

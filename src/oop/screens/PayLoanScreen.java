@@ -1,12 +1,10 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
-import oop.TransactionType;
-import oop.models.Account;
-import oop.models.Loan;
+import oop.SimpleBankCliApplication;
+import oop.models.entities.Account;
+import oop.models.entities.Loan;
 import oop.services.AccountService;
 import oop.services.LoanService;
-import oop.services.TransactionService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.Scanner;
 
 public class PayLoanScreen {
     public void show(Account sourceAcct) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         System.out.println("Welcome to Pay Loan Screen!");
         System.out.println("Checking if you have taken any loan......... ");
         List<Loan> loans = new ArrayList<>();

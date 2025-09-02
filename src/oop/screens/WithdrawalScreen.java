@@ -1,8 +1,8 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
+import oop.SimpleBankCliApplication;
 import oop.TransactionType;
-import oop.models.Account;
+import oop.models.entities.Account;
 import oop.services.AccountService;
 import oop.services.TransactionService;
 
@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class WithdrawalScreen {
     public void show(Account account) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         System.out.println("Welcome to Withdrawal Screen!");
         Scanner scanner =  new Scanner(System.in);
         double amountToWithdraw;

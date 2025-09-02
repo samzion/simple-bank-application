@@ -1,22 +1,19 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
+import oop.SimpleBankCliApplication;
 import oop.TransactionType;
-import oop.TransferProcessor;
-import oop.models.Account;
-import oop.models.Loan;
+import oop.models.entities.Account;
 import oop.services.AccountService;
 import oop.services.LoanService;
 import oop.services.TransactionService;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Scanner;
 
 
 public class CollectLoanScreen {
     public void show(Account destinationAcct) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         System.out.println("Welcome to Collect Loan Screen!");
         Scanner scanner =  new Scanner(System.in);
         double loanAmount;

@@ -1,6 +1,6 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
+import oop.SimpleBankCliApplication;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class UserLogInPrompt {
 
     void show() throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
 
         while(true){
             System.out.println("Enter 1 to create a user account");
@@ -17,11 +17,11 @@ public class UserLogInPrompt {
             Scanner scanner = new Scanner(System.in);
             int userInput = scanner.nextInt();
             if (userInput==1){
-                SimpleBankApplication.clearConsole();
+                SimpleBankCliApplication.clearConsole();
                 UserCreationScreen userCreationScreen = new UserCreationScreen();
                 userCreationScreen.show();
             } else if (userInput ==2){
-                SimpleBankApplication.clearConsole();
+                SimpleBankCliApplication.clearConsole();
                 UserLoginScreen userLoginScreen = new UserLoginScreen();
                 userLoginScreen.show();
             } else if (userInput == 0) {

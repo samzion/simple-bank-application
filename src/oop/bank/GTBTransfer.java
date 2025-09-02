@@ -1,6 +1,6 @@
 package oop.bank;
 
-import oop.models.Account;
+import oop.models.entities.Account;
 
 public class GTBTransfer implements ITransfer {
     protected String bank = "generic";

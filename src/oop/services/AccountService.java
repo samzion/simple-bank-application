@@ -1,11 +1,10 @@
 package oop.services;
 
 import oop.db.DataBaseConnection;
-import oop.models.Account;
-import oop.models.User;
+import oop.models.entities.Account;
+import oop.models.entities.User;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,19 +1,17 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
-import oop.models.Account;
-import oop.models.User;
+import oop.SimpleBankCliApplication;
+import oop.models.entities.Account;
+import oop.models.entities.User;
 import oop.services.AccountService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class AccountListScreen {
     public static List<Account> listAccount(User user) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         AccountService accountService = new AccountService();
         List<Account> accounts = new ArrayList<>();
         accounts = accountService.listAccount(user);

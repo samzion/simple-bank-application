@@ -2,8 +2,7 @@ package oop.services;
 
 import oop.TransactionType;
 import oop.db.DataBaseConnection;
-import oop.models.Account;
-import oop.models.User;
+import oop.models.entities.Account;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

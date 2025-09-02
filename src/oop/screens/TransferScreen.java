@@ -1,9 +1,9 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
+import oop.SimpleBankCliApplication;
 import oop.TransactionType;
 import oop.TransferProcessor;
-import oop.models.Account;
+import oop.models.entities.Account;
 import oop.services.AccountService;
 import oop.services.TransactionService;
 
@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class TransferScreen {
     public void show(Account sourceAccount) throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         System.out.println("Welcome to Transfer Screen!");
         Scanner scanner =  new Scanner(System.in);
         double amountToTransfer;

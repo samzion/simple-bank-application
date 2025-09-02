@@ -1,17 +1,15 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
-import oop.models.User;
+import oop.SimpleBankCliApplication;
+import oop.models.entities.User;
 import oop.services.UserService;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserLoginScreen {
     public void show() throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         System.out.println("USER LOGIN SCREEN");
         int count = 0;
         while(true) {

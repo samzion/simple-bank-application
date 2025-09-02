@@ -1,6 +1,6 @@
 package oop.screens;
 
-import oop.SimpleBankApplication;
+import oop.SimpleBankCliApplication;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class WelcomeScreen {
 
     public void show() throws SQLException, ClassNotFoundException {
-        SimpleBankApplication.clearConsole();
+        SimpleBankCliApplication.clearConsole();
         System.out.println("WELCOME TO SAMMY BANK");
 
         while(true){
@@ -16,7 +16,7 @@ public class WelcomeScreen {
             Scanner scanner = new Scanner(System.in);
             int userInput = scanner.nextInt();
             if (userInput==1){
-                SimpleBankApplication.clearConsole();
+                SimpleBankCliApplication.clearConsole();
                 UserLogInPrompt userLogInPrompt = new UserLogInPrompt();
                 userLogInPrompt.show();
                 break;

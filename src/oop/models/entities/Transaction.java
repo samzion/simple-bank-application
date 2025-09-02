@@ -1,4 +1,4 @@
-package oop.models;
+package oop.models.entities;
 
 import oop.TransactionType;
 
