@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import oop.db.DataBaseConnection;
 import oop.db.migrations.MigrationRunner;
+import oop.httpHandlers.AccountCreationHandler;
 import oop.httpHandlers.UserCreationHandler;
 import oop.httpHandlers.UserLoginHandler;
 
@@ -34,6 +35,7 @@ public class SimpleBankRestApiApplication {
             //TODO: Create a landing page path called homeHandler to return all the APIs that is supported.
             server.createContext("/create-user", new UserCreationHandler());
             server.createContext("/user-login", new UserLoginHandler());
+            server.createContext("/create-account", new AccountCreationHandler());
             server.createContext("/search", new SearchHandler());
 
             // Start the server
