@@ -1,11 +1,14 @@
 package oop.services;
 
+import oop.TransactionType;
 import oop.db.DataBaseConnection;
 import oop.models.entities.Account;
 import oop.models.entities.User;
-import oop.models.requests.AccountCreationRequest;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,7 @@ public class AccountService {
     public AccountService() throws SQLException, ClassNotFoundException {
        connection = DataBaseConnection.getConnection();
     }
+
 
     public boolean createAccount(User user, String accountNumber, String bank) throws SQLException {
         boolean flag = false;
@@ -120,6 +124,32 @@ public class AccountService {
             return account;
         }
         return null;
+    }
+
+    public String deposit( User user, String accountNumber, double depositAmt) throws SQLException, ClassNotFoundException {
+        if(depositAmt <=100){
+            System.out.println( "Invalid figure");
+            return "Invalid figure";
+        }
+        List<Account> accounts = new AccountService().listAccount(user);
+        if(accounts == null){
+            return "You have no existing account";
+        }
+        for(Account account: accounts){
+            if(account.getAccountNumber().equalsIgnoreCase(accountNumber)){
+                TransactionService transactionService = new TransactionService();
+                double balance =  account.getBalance();
+                balance+=depositAmt;
+                account.setBalance(balance);
+                AccountService accountService = new AccountService();
+                if(accountService.updateAccount(account)){
+                    transactionService.createTransaction(account, depositAmt, TransactionType.CREDIT);
+                    System.out.println("Deposit of " + depositAmt + " into " + account.getAccountNumber() + "'s account is successful");
+                    return "Deposit request successful!";
+                }
+            }
+        }
+        return "Invalid account number";
     }
 
 }

@@ -1,20 +1,15 @@
 package oop;
-import com.google.gson.Gson;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import oop.db.DataBaseConnection;
 import oop.db.migrations.MigrationRunner;
-import oop.httpHandlers.AccountCreationHandler;
-import oop.httpHandlers.ListAccountHandler;
-import oop.httpHandlers.UserCreationHandler;
-import oop.httpHandlers.UserLoginHandler;
+import oop.httpHandlers.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -38,6 +33,7 @@ public class SimpleBankRestApiApplication {
             server.createContext("/user-login", new UserLoginHandler());
             server.createContext("/create-account", new AccountCreationHandler());
             server.createContext("/list-accounts", new ListAccountHandler());
+            server.createContext("/deposit", new DepositHandler());
             server.createContext("/search", new SearchHandler());
 
             // Start the server
