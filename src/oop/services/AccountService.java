@@ -3,6 +3,7 @@ package oop.services;
 import oop.db.DataBaseConnection;
 import oop.models.entities.Account;
 import oop.models.entities.User;
+import oop.models.requests.AccountCreationRequest;
 
 import java.sql.*;
 import java.util.ArrayList;
