@@ -1,0 +1,59 @@
+package oop.httpHandlers;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sun.net.httpserver.HttpExchange;
+import oop.SimpleBankRestApiApplication;
+import oop.models.entities.Account;
+import oop.models.entities.User;
+import oop.others.LocalDateAdapter;
+import oop.others.LocalDateTimeAdapter;
+import oop.services.UserService;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+public class BaseHandler {
+
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
+
+
+    public boolean isValidRequestMethod(HttpExchange exchange, String allowedMethod){
+        String method = exchange.getRequestMethod();
+        return allowedMethod.equalsIgnoreCase(method);
+    }
+
+
+    public User getAuthenticatedUser(HttpExchange exchange) {
+        var headers = exchange.getRequestHeaders();
+        // Extract a specific header (case-insensitive)
+        String authHeader = headers.getFirst("Authorization");
+        if (authHeader == null) {
+            return null;
+        }
+        String[] authHeaderArray = authHeader.split("/");
+        if (authHeaderArray.length != 2) {
+            return null;
+        }
+        User existingUser = null;
+        try {
+            UserService userService = new UserService();
+            String userToken = authHeaderArray[1];
+            existingUser = userService.getUserDetailsByUserToken(userToken);
+
+            if (existingUser == null || !existingUser.getEmail().equalsIgnoreCase(authHeaderArray[0])) {
+                return null;
+            }
+            return existingUser;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+}
+

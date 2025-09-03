@@ -21,47 +21,29 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ListAccountHandler implements HttpHandler {
+public class ListAccountHandler extends BaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        if(!"post".equalsIgnoreCase(method)) {
+        if(!this.isValidRequestMethod(exchange, "get")) {
             // Handle the request
             String response = "Method not allowed";
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 405, response);
             return;
         }
-        String body = "{}";
-        try (InputStream input = exchange.getRequestBody()) {
-            body =  new String(input.readAllBytes(), StandardCharsets.UTF_8);
-        }
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .create();
-        AccountListRequest accountListRequest = gson.fromJson(body, AccountListRequest.class);
-        String validationMessage = AccountListRequest.validate(accountListRequest);
-        if(!validationMessage.equals("Account list request okay!")){
-            SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, validationMessage);
+        User authenticatedUser = this.getAuthenticatedUser(exchange);
+        if(authenticatedUser == null) {
+            SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, "Unauthorized!");
             return;
         }
-        User  existingUser = null;
-        List<Account> accounts= null;
-        try {
-            UserService userService = new UserService();
-            String userToken = accountListRequest.getUserToken();
-            existingUser = userService.getUserDetailsByUserToken(userToken);
 
-            if(existingUser == null){
-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, "You have no existing account");
-            } else {
+       try{
                 AccountService accountService = new AccountService();
-                accounts =   accountService.listAccount(existingUser);
+               List<Account> accounts =   accountService.listAccount(authenticatedUser);
                 AccountListResponse accountListResponse = new AccountListResponse();
                 accountListResponse.setAccounts(accounts);
                 String jsonResponse = gson.toJson(accountListResponse);
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, jsonResponse);
-            }
+
         } catch (Exception e) {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
         }

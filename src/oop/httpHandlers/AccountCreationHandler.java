@@ -21,47 +21,29 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-public class AccountCreationHandler implements HttpHandler {
+public class AccountCreationHandler extends BaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        if(!"post".equalsIgnoreCase(method)) {
+
+        if(!this.isValidRequestMethod(exchange, "post")) {
             // Handle the request
             String response = "Method not allowed";
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 405, response);
             return;
         }
-        String body = "{}";
-        try (InputStream input = exchange.getRequestBody()) {
-            body =  new String(input.readAllBytes(), StandardCharsets.UTF_8);
-        }
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .create();
-        AccountCreationRequest accountCreationRequest = gson.fromJson(body, AccountCreationRequest.class);
-        String validationMessage = AccountCreationRequest.validate(accountCreationRequest);
-        if(!validationMessage.equals("Account creation request okay!")){
-            SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, validationMessage);
+        User authenticatedUser = this.getAuthenticatedUser(exchange);
+        if(authenticatedUser == null) {
+            SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, "Unauthorized!");
             return;
         }
-        User  existingUser = null;
-        Account newCreatedAccount= null;
-        try {
-            UserService userService = new UserService();
-            String userToken = accountCreationRequest.getUserToken();
-            existingUser = userService.getUserDetailsByUserToken(userToken);
-
-            if(existingUser == null){
-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unable to create account");
-            } else {
+        try{
                 AccountService accountService = new AccountService();
-                newCreatedAccount =   accountService.confirmAccountDetails(createAccountFromUserDetails(existingUser));
+                Account newCreatedAccount =   accountService.confirmAccountDetails(createAccountFromUserDetails(authenticatedUser));
                 newCreatedAccount.setTransactions(null);
                 newCreatedAccount.setLoans(null);
                 String jsonResponse = gson.toJson(newCreatedAccount);
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, jsonResponse);
-            }
+
         } catch (Exception e) {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
         }
