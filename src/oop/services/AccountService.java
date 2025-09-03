@@ -152,4 +152,33 @@ public class AccountService {
         return "Invalid account number";
     }
 
+    public String withdraw( User user, String accountNumber, double withdrawAmt) throws SQLException, ClassNotFoundException {
+        if(withdrawAmt <=100){
+            System.out.println( "Invalid figure");
+            return "Invalid figure";
+        }
+        List<Account> accounts = new AccountService().listAccount(user);
+        if(accounts == null){
+            return "You have no existing account";
+        }
+        for(Account account: accounts){
+            if(account.getAccountNumber().equalsIgnoreCase(accountNumber)){
+                TransactionService transactionService = new TransactionService();
+                double balance =  account.getBalance();
+                if(withdrawAmt > balance){
+                    return "Insufficient funds!";
+                }
+                balance-=withdrawAmt;
+                account.setBalance(balance);
+                AccountService accountService = new AccountService();
+                if(accountService.updateAccount(account)){
+                    transactionService.createTransaction(account, withdrawAmt, TransactionType.DEBIT);
+                    System.out.println("Withdrawal of " + withdrawAmt + " from " + account.getAccountNumber() + "'s account is successful");
+                    return "Withdrawal request successful!";
+                }
+            }
+        }
+        return "Invalid account number";
+    }
+
 }
