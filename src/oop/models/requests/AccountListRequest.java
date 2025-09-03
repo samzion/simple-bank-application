@@ -1,37 +1,28 @@
 package oop.models.requests;
 
 public class AccountListRequest {
-    private String email;
-    private String password;
+    private String userToken;
 
-    public String getEmail() {
-        return email;
+
+    public String getUserToken() {
+        return userToken;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserToken(String userToken) {
+        this.userToken= userToken;
     }
 
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public static String validate(AccountListRequest userLoginRequest){
-        if(userLoginRequest == null){
-            return "User login request cannot be null";
-        }
-        if(userLoginRequest.getPassword() == null ||userLoginRequest.getPassword().isEmpty()){
-            return "Password cannot be null or empty";
-        }
-        if(userLoginRequest.getEmail() == null ||userLoginRequest.getEmail().isEmpty()){
-            return "Email cannot be null or empty";
+    public static String validate(AccountListRequest accountListRequest){
+        if(accountListRequest == null){
+            return "Account list request cannot be null";
         }
 
-        return "User login request okay!";
+        if(accountListRequest.getUserToken() == null ||accountListRequest.getUserToken().isEmpty()){
+            return "user ten cannot be null or empty";
+        }
+
+        return "Account list request okay!";
     }
 }
