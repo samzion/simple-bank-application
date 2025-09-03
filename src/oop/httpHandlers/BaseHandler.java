@@ -3,15 +3,11 @@ package oop.httpHandlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import oop.SimpleBankRestApiApplication;
-import oop.models.entities.Account;
 import oop.models.entities.User;
 import oop.others.LocalDateAdapter;
 import oop.others.LocalDateTimeAdapter;
 import oop.services.UserService;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

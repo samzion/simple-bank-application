@@ -1,24 +1,14 @@
 package oop.httpHandlers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import oop.SimpleBankRestApiApplication;
 import oop.models.entities.Account;
 import oop.models.entities.User;
-import oop.models.requests.AccountCreationRequest;
-import oop.others.LocalDateAdapter;
-import oop.others.LocalDateTimeAdapter;
 import oop.services.AccountService;
-import oop.services.UserService;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Random;
 
 public class AccountCreationHandler extends BaseHandler implements HttpHandler {
