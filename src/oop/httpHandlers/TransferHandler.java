@@ -3,16 +3,16 @@ package oop.httpHandlers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import oop.SimpleBankRestApiApplication;
+import oop.TransferProcessor;
 import oop.models.entities.User;
-import oop.models.requests.WithdrawRequest;
+import oop.models.requests.TransferRequest;
 import oop.models.response.AccountOperationResponse;
-import oop.services.AccountService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class WithdrawHandler extends BaseHandler implements HttpHandler {
+public class TransferHandler extends BaseHandler implements HttpHandler {
     public void handle (HttpExchange exchange) throws IOException {
         if(!this.isValidRequestMethod(exchange, "post")) {
             // Handle the request
@@ -29,17 +29,15 @@ public class WithdrawHandler extends BaseHandler implements HttpHandler {
         try (InputStream input = exchange.getRequestBody()) {
             body =  new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
-        WithdrawRequest withdrawRequest = gson.fromJson(body, WithdrawRequest.class);
-        String validationMessage = WithdrawRequest.validate(withdrawRequest);
-        if(!validationMessage.equals("Withdrawal request okay!")){
+        TransferRequest transferRequest = gson.fromJson(body, TransferRequest.class);
+        String validationMessage = TransferRequest.validate(transferRequest);
+        if(!validationMessage.equals("Transfer request okay!")){
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, validationMessage);
             return;
         }
         try{
-            AccountService accountService = new AccountService();
-            AccountOperationResponse withdrawResponse =accountService.withdraw(authenticatedUser, withdrawRequest.getAccountNumber()
-                    , withdrawRequest.getWithdrawAmount());
-            SimpleBankRestApiApplication.writeHttpResponse(exchange, withdrawResponse.getStatusCode(), withdrawResponse.getMessage());
+            AccountOperationResponse transferResponse = TransferProcessor.transfer(authenticatedUser, transferRequest.getSourceAccountNumber(), transferRequest.getDestinationAccountNumber(),transferRequest.getAmount());
+            SimpleBankRestApiApplication.writeHttpResponse(exchange, transferResponse.getStatusCode(), transferResponse.getMessage());
 
         } catch (Exception e) {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");

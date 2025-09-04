@@ -4,6 +4,7 @@ import oop.TransactionType;
 import oop.db.DataBaseConnection;
 import oop.models.entities.Account;
 import oop.models.entities.User;
+import oop.models.response.AccountOperationResponse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +39,7 @@ public class AccountService {
         return true;
     }
 
-    public boolean updateAccount(Account account) throws SQLException {
+    public boolean updateAccountBalance(Account account) throws SQLException {
         boolean flag = false;
 
         String query = """
@@ -126,59 +127,88 @@ public class AccountService {
         return null;
     }
 
-    public String deposit( User user, String accountNumber, double depositAmt) throws SQLException, ClassNotFoundException {
-        if(depositAmt <=100){
-            System.out.println( "Invalid figure");
-            return "Invalid figure";
+    public AccountOperationResponse deposit(User user, String accountNumber, double depositAmt) throws SQLException, ClassNotFoundException {
+        AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
+
+        Account sourceAccount = getAccountByUserAndAccountNumber(user, accountNumber);
+        if (sourceAccount == null){
+            accountOperationResponse.setStatusCode(404);
+            accountOperationResponse.setMessage("User account not found");
+            return accountOperationResponse;
         }
-        List<Account> accounts = new AccountService().listAccount(user);
-        if(accounts == null){
-            return "You have no existing account";
-        }
-        for(Account account: accounts){
-            if(account.getAccountNumber().equalsIgnoreCase(accountNumber)){
-                TransactionService transactionService = new TransactionService();
-                double balance =  account.getBalance();
-                balance+=depositAmt;
-                account.setBalance(balance);
-                AccountService accountService = new AccountService();
-                if(accountService.updateAccount(account)){
-                    transactionService.createTransaction(account, depositAmt, TransactionType.CREDIT);
-                    System.out.println("Deposit of " + depositAmt + " into " + account.getAccountNumber() + "'s account is successful");
-                    return "Deposit request successful!";
-                }
-            }
-        }
-        return "Invalid account number";
+      return deposit(sourceAccount,depositAmt);
     }
 
-    public String withdraw( User user, String accountNumber, double withdrawAmt) throws SQLException, ClassNotFoundException {
-        if(withdrawAmt <=100){
-            System.out.println( "Invalid figure");
-            return "Invalid figure";
+    public AccountOperationResponse deposit( Account sourceAccount, double depositAmt) throws SQLException, ClassNotFoundException {
+        AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
+        TransactionService transactionService = new TransactionService();
+        double balance =  sourceAccount.getBalance();
+        if(depositAmt < 100){
+            accountOperationResponse.setStatusCode(400);
+            accountOperationResponse.setMessage("Invalid figure");
+            return accountOperationResponse;
         }
+        balance+=depositAmt;
+        sourceAccount.setBalance(balance);
+        AccountService accountService = new AccountService();
+        if(accountService.updateAccountBalance(sourceAccount)){
+            transactionService.createTransaction(sourceAccount, depositAmt, TransactionType.CREDIT);
+            System.out.println("Deposit of " + depositAmt + " from " + sourceAccount.getAccountNumber() + "'s account is successful");
+            accountOperationResponse.setStatusCode(200);
+            accountOperationResponse.setMessage("Deposit request successful!");
+            return accountOperationResponse;
+        }
+        accountOperationResponse.setStatusCode(500);
+        accountOperationResponse.setMessage("Unknown error occurred");
+        return accountOperationResponse;
+    }
+
+    public Account getAccountByUserAndAccountNumber(User user, String accountNumber) throws SQLException, ClassNotFoundException {
         List<Account> accounts = new AccountService().listAccount(user);
         if(accounts == null){
-            return "You have no existing account";
+            return null;
         }
         for(Account account: accounts){
             if(account.getAccountNumber().equalsIgnoreCase(accountNumber)){
-                TransactionService transactionService = new TransactionService();
-                double balance =  account.getBalance();
-                if(withdrawAmt > balance){
-                    return "Insufficient funds!";
-                }
-                balance-=withdrawAmt;
-                account.setBalance(balance);
-                AccountService accountService = new AccountService();
-                if(accountService.updateAccount(account)){
-                    transactionService.createTransaction(account, withdrawAmt, TransactionType.DEBIT);
-                    System.out.println("Withdrawal of " + withdrawAmt + " from " + account.getAccountNumber() + "'s account is successful");
-                    return "Withdrawal request successful!";
-                }
+                return account;
             }
         }
-        return "Invalid account number";
+        return null;
+    }
+
+    public AccountOperationResponse withdraw( User user, String accountNumber, double withdrawAmt) throws SQLException, ClassNotFoundException {
+        AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
+        Account sourceAccount = getAccountByUserAndAccountNumber(user, accountNumber);
+        if (sourceAccount == null){
+            accountOperationResponse.setStatusCode(404);
+            accountOperationResponse.setMessage("User account not found");
+            return accountOperationResponse;
+        }
+       return withdraw(sourceAccount,withdrawAmt);
+    }
+
+    public AccountOperationResponse withdraw( Account sourceAccount, double withdrawAmt) throws SQLException, ClassNotFoundException {
+        AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
+        TransactionService transactionService = new TransactionService();
+        double balance =  sourceAccount.getBalance();
+        if(withdrawAmt > balance){
+            accountOperationResponse.setStatusCode(404);
+            accountOperationResponse.setMessage("Insufficient funds");
+            return accountOperationResponse;
+        }
+        balance-=withdrawAmt;
+        sourceAccount.setBalance(balance);
+        AccountService accountService = new AccountService();
+        if(accountService.updateAccountBalance(sourceAccount)){
+            transactionService.createTransaction(sourceAccount, withdrawAmt, TransactionType.DEBIT);
+            System.out.println("Withdrawal of " + withdrawAmt + " from " + sourceAccount.getAccountNumber() + "'s account is successful");
+            accountOperationResponse.setStatusCode(200);
+            accountOperationResponse.setMessage("Withdrawal request successful!");
+            return accountOperationResponse;
+        }
+        accountOperationResponse.setStatusCode(500);
+        accountOperationResponse.setMessage("Unknown error occurred");
+        return accountOperationResponse;
     }
 
 }

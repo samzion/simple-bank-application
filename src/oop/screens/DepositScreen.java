@@ -22,7 +22,7 @@ public class DepositScreen {
             if(account.deposit(amountToDeposit)){
                 AccountService accountService = new AccountService();
                 TransactionService transactionService =  new TransactionService();
-                if(accountService.updateAccount(account) &&
+                if(accountService.updateAccountBalance(account) &&
                         transactionService.createTransaction(account, amountToDeposit, TransactionType.CREDIT)){
                     return;
                 }

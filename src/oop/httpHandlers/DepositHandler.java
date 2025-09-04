@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import oop.SimpleBankRestApiApplication;
 import oop.models.entities.User;
 import oop.models.requests.DepositRequest;
+import oop.models.response.AccountOperationResponse;
 import oop.services.AccountService;
 
 import java.io.IOException;
@@ -36,19 +37,9 @@ public class DepositHandler  extends BaseHandler implements HttpHandler {
         }
         try{
             AccountService accountService = new AccountService();
-            String depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
+            AccountOperationResponse depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
                     , depositRequest.getDepositAmount());
-            if(depositResponse.equalsIgnoreCase("Deposit request successful!")){
-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, depositResponse);
-                return;
-            }
-            if(depositResponse.equalsIgnoreCase("You have no existing account")){
-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 404, depositResponse);
-                return;
-            }
-            if(depositResponse.equalsIgnoreCase("Invalid account number")){
-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, depositResponse);
-            }
+            SimpleBankRestApiApplication.writeHttpResponse(exchange, depositResponse.getStatusCode(), depositResponse.getMessage());
 
         } catch (Exception e) {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
