@@ -37,6 +37,7 @@ public class SimpleBankRestApiApplication {
             server.createContext("/withdraw", new WithdrawHandler());
             server.createContext("/transfer", new TransferHandler());
             server.createContext("/collect-loan", new CollectLoanHandler());
+            server.createContext("/pay-loan", new PayLoanHandler());
             server.createContext("/search", new SearchHandler());
 
             // Start the server
