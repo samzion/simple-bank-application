@@ -7,11 +7,20 @@ import oop.models.entities.Account;
 import oop.models.entities.User;
 import oop.models.response.AccountListResponse;
 import oop.services.AccountService;
+import oop.services.UserService;
 
 import java.io.IOException;
 import java.util.List;
 
 public class ListAccountHandler extends BaseHandler implements HttpHandler {
+    private AccountService accountService;
+
+    public ListAccountHandler(UserService userService, AccountService accountService){
+        super(userService);
+        this.accountService = accountService;
+    }
+
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if(!this.isValidRequestMethod(exchange, "get")) {
@@ -27,8 +36,7 @@ public class ListAccountHandler extends BaseHandler implements HttpHandler {
         }
 
        try{
-                AccountService accountService = new AccountService();
-               List<Account> accounts =   accountService.listAccount(authenticatedUser);
+                List<Account> accounts =   this.accountService.listAccount(authenticatedUser);
                 AccountListResponse accountListResponse = new AccountListResponse();
                 accountListResponse.setAccounts(accounts);
                 String jsonResponse = gson.toJson(accountListResponse);

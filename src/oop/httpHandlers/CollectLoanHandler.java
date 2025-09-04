@@ -18,6 +18,18 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
 public class CollectLoanHandler extends BaseHandler implements HttpHandler {
+
+    public AccountService accountService;
+    public LoanService loanService;
+    public TransferProcessor transferProcessor;
+
+    public CollectLoanHandler(UserService userService, AccountService accountService, LoanService loanService, TransferProcessor transferProcessor){
+        super(userService);
+        this.accountService = accountService;
+        this.loanService = loanService;
+        this.transferProcessor = transferProcessor;
+    }
+
     public void handle (HttpExchange exchange) throws IOException {
         if(!this.isValidRequestMethod(exchange, "post")) {
             // Handle the request
@@ -43,8 +55,7 @@ public class CollectLoanHandler extends BaseHandler implements HttpHandler {
 
         Account destinationAccount = new Account();
         try {
-            AccountService accountService = new AccountService();
-            destinationAccount = accountService.confirmAccountDetails(
+            destinationAccount = this.accountService.confirmAccountDetails(
                     collectLoanRequest.getDestinationAccountNumber()
             );
 
@@ -53,17 +64,16 @@ public class CollectLoanHandler extends BaseHandler implements HttpHandler {
                 return;
             }
 
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
         }
 
         try{
-            String sourceAccountNumber = "1018521126";//Sammy Bank Central account number
-            UserService userservice = new UserService();
-            User sourceUser = userservice.getUserByAccountNumber(sourceAccountNumber);
-            AccountOperationResponse transferResponse = TransferProcessor.transfer(sourceUser, sourceAccountNumber, collectLoanRequest.getDestinationAccountNumber(),collectLoanRequest.getLoanAmount());
-            LoanService loanService = new LoanService();
-            loanService.createLoan(destinationAccount, collectLoanRequest.getLoanAmount());
+             String sourceAccountNumber = "1018521126";//Sammy Bank Central account number
+        //TODO: Add sourceAccountNumber as part of the configuration that will the read in from the main method. And pass the variable into this class constructor.
+            User sourceUser = userService.getUserByAccountNumber(sourceAccountNumber);
+            AccountOperationResponse transferResponse = this.transferProcessor.transfer(sourceUser, sourceAccountNumber, collectLoanRequest.getDestinationAccountNumber(),collectLoanRequest.getLoanAmount());
+            this.loanService.createLoan(destinationAccount, collectLoanRequest.getLoanAmount());
             SimpleBankRestApiApplication.writeHttpResponse(exchange, transferResponse.getStatusCode(), transferResponse.getMessage());
 
         } catch (Exception e) {

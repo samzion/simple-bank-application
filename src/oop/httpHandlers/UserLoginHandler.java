@@ -18,6 +18,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class UserLoginHandler implements HttpHandler {
+    private UserService userService;
+
+    public UserLoginHandler(UserService userService){
+        this.userService = userService;
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
@@ -42,15 +48,14 @@ public class UserLoginHandler implements HttpHandler {
         }
         User existingUser;
         try {
-            UserService userService = new UserService();
-            existingUser = userService.confirmUserLoginDetails(userLoginRequest.getEmail(), userLoginRequest.getPassword());
+            existingUser = this.userService.confirmUserLoginDetails(userLoginRequest.getEmail(), userLoginRequest.getPassword());
 
             if(existingUser == null){
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, "Incorrect login details");
             }else {
                 String uuid = UUID.randomUUID().toString().replace("-", "");
                 existingUser.setUserToken(uuid);
-                userService.updateToken(existingUser);
+                this.userService.updateToken(existingUser);
                 existingUser.setPassword(null);
                 String jsonResponse = gson.toJson(existingUser);
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, jsonResponse);

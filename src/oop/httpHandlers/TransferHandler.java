@@ -7,12 +7,20 @@ import oop.TransferProcessor;
 import oop.models.entities.User;
 import oop.models.requests.TransferRequest;
 import oop.models.response.AccountOperationResponse;
+import oop.services.UserService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class TransferHandler extends BaseHandler implements HttpHandler {
+    private UserService userService;
+    private TransferProcessor transferProcessor;
+
+    public TransferHandler(UserService userService, TransferProcessor transferProcessor){
+        super(userService);
+        this.transferProcessor = transferProcessor;
+    }
     public void handle (HttpExchange exchange) throws IOException {
         if(!this.isValidRequestMethod(exchange, "post")) {
             // Handle the request
@@ -36,7 +44,7 @@ public class TransferHandler extends BaseHandler implements HttpHandler {
             return;
         }
         try{
-            AccountOperationResponse transferResponse = TransferProcessor.transfer(authenticatedUser, transferRequest.getSourceAccountNumber(), transferRequest.getDestinationAccountNumber(),transferRequest.getAmount());
+            AccountOperationResponse transferResponse = transferProcessor.transfer(authenticatedUser, transferRequest.getSourceAccountNumber(), transferRequest.getDestinationAccountNumber(),transferRequest.getAmount());
             SimpleBankRestApiApplication.writeHttpResponse(exchange, transferResponse.getStatusCode(), transferResponse.getMessage());
 
         } catch (Exception e) {
