@@ -1,6 +1,7 @@
 package oop.services;
 
 import oop.db.DataBaseConnection;
+import oop.models.entities.Account;
 import oop.models.entities.User;
 import oop.models.requests.UserCreationRequest;
 
@@ -45,6 +46,21 @@ public class UserService {
         return user;
     }
 
+    public User getUserByAccountNumber(String accountNumber) throws SQLException {
+        String queryLoginDetails = "SELECT * FROM accounts WHERE account_number = ?";
+        PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);
+        pStatement.setString(1, accountNumber);
+        ResultSet rs = pStatement.executeQuery();
+        User user=null;
+        Account account = new Account();
+        if(rs.next()){
+            System.out.println("An account with this account number exist.");
+            int userId = rs.getInt("user_id");
+            user = getUserByUserId(userId);
+        }
+        return user;
+    }
+
     public boolean createUser(User user) throws SQLException {
         boolean flag = false;
         //check if email exist in database before
@@ -82,6 +98,32 @@ public class UserService {
         PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);
         pStatement.setString(1, email);
         pStatement.setString(2, password);
+        ResultSet rs = pStatement.executeQuery();
+
+        User user =  null;
+
+        if(rs.next()){
+            user = new User();
+            System.out.println("A user with this email and password exist.");
+            user.setId( rs.getInt("id")) ;
+            user.setFirstName(rs.getString("firstname"));
+            user.setLastName(rs.getString("lastname"));
+            user.setAddress(rs.getString("address"));
+            user.setEmail(rs.getString("email"));
+            user.setPassword(rs.getString("password"));
+            user.setGender(rs.getString("gender"));
+            user.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+            user.setUpdatedOn(rs.getTimestamp("updated_on").toLocalDateTime());
+            return  user;
+        }
+        return user;
+    }
+
+    public User getUserByUserId(int userId) throws SQLException {
+        String queryLoginDetails = "SELECT * FROM users WHERE id = ?";
+        PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);
+        pStatement.setInt(1,userId);
+
         ResultSet rs = pStatement.executeQuery();
 
         User user =  null;
