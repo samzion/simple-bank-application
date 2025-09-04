@@ -1,5 +1,4 @@
 package oop;
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -11,12 +10,12 @@ import oop.httpHandlers.UserCreationHandler;
 import oop.httpHandlers.UserLoginHandler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import oop.services.AccountService;
+import oop.services.UserService;
 
 public class SimpleBankRestApiApplication {
 
@@ -31,13 +30,16 @@ public class SimpleBankRestApiApplication {
             // Create an HttpServer instance
             HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
 
+            UserService userService = new UserService(connection);
+            AccountService accountService = new AccountService(connection);
+
             // Create a context for a specific path and set the handler
             server.createContext("/", new MyHandler());
             //TODO: Create a landing page path called homeHandler to return all the APIs that is supported.
-            server.createContext("/create-user", new UserCreationHandler());
-            server.createContext("/user-login", new UserLoginHandler());
-            server.createContext("/create-account", new AccountCreationHandler());
-            server.createContext("/list-accounts", new ListAccountHandler());
+            server.createContext("/create-user", new UserCreationHandler(userService));
+            server.createContext("/user-login", new UserLoginHandler(userService));
+            server.createContext("/create-account", new AccountCreationHandler(userService, accountService));
+            server.createContext("/list-accounts", new ListAccountHandler(userService, accountService));
             server.createContext("/search", new SearchHandler());
 
             // Start the server

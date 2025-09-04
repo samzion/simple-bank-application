@@ -18,6 +18,10 @@ public class LoanService {
        connection = DataBaseConnection.getConnection();
     }
 
+    public LoanService(Connection connection) throws SQLException, ClassNotFoundException {
+        this.connection = connection;
+    }
+
     public boolean createLoan(Account receiverAccount, double amountBorrowed) throws SQLException {
         boolean flag = false;
 

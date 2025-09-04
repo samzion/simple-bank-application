@@ -22,6 +22,13 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 public class AccountCreationHandler extends BaseHandler implements HttpHandler {
+    private AccountService accountService;
+
+    public AccountCreationHandler(UserService userService, AccountService accountService){
+        super(userService);
+        this.accountService = accountService;
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
@@ -37,8 +44,7 @@ public class AccountCreationHandler extends BaseHandler implements HttpHandler {
             return;
         }
         try{
-                AccountService accountService = new AccountService();
-                Account newCreatedAccount =   accountService.confirmAccountDetails(createAccountFromUserDetails(authenticatedUser));
+                Account newCreatedAccount =   this.accountService.confirmAccountDetails(createAccountFromUserDetails(authenticatedUser));
                 newCreatedAccount.setTransactions(null);
                 newCreatedAccount.setLoans(null);
                 String jsonResponse = gson.toJson(newCreatedAccount);
@@ -49,15 +55,14 @@ public class AccountCreationHandler extends BaseHandler implements HttpHandler {
         }
     }
 
-    private static String createAccountFromUserDetails(User existingUser) throws SQLException, ClassNotFoundException {
-        AccountService accountService = new AccountService();
+    private String createAccountFromUserDetails(User existingUser) throws SQLException {
         String accountNumber;
         Random random = new Random();
         while(true){
             accountNumber = String.valueOf(random.nextLong(1000000000,1100000000));
             String[] banks = {"uba", "gtb", "default"};
             String bank = banks[new Random().nextInt(banks.length)];
-            if(accountService.createAccount(existingUser, accountNumber, bank)){
+            if(this.accountService.createAccount(existingUser, accountNumber, bank)){
                 System.out.println("Your account number is " + accountNumber);
                 return accountNumber;
             }
