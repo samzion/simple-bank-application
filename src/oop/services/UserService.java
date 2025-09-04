@@ -8,10 +8,14 @@ import java.sql.*;
 import java.time.LocalDateTime;
 
 public class UserService {
-    Connection connection ;
+    private Connection connection ;
 
     public UserService() throws SQLException, ClassNotFoundException {
-       connection = DataBaseConnection.getConnection();
+        this.connection = DataBaseConnection.getConnection();
+    }
+
+    public UserService(Connection connection) {
+       this.connection = connection;
     }
 
     public User createUser(UserCreationRequest userCreationRequest) throws SQLException {

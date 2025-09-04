@@ -17,6 +17,12 @@ import java.time.LocalDateTime;
 
 public class BaseHandler {
 
+    private UserService userService;
+
+    public BaseHandler(UserService userService){
+        this.userService = userService;
+    }
+
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
@@ -42,9 +48,8 @@ public class BaseHandler {
         }
         User existingUser = null;
         try {
-            UserService userService = new UserService();
             String userToken = authHeaderArray[1];
-            existingUser = userService.getUserDetailsByUserToken(userToken);
+            existingUser = this.userService.getUserDetailsByUserToken(userToken);
 
             if (existingUser == null || !existingUser.getEmail().equalsIgnoreCase(authHeaderArray[0])) {
                 return null;

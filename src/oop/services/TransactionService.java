@@ -18,6 +18,10 @@ public class TransactionService {
        connection = DataBaseConnection.getConnection();
     }
 
+    public TransactionService(Connection connection) throws SQLException, ClassNotFoundException {
+        this.connection = connection;
+    }
+
     public boolean createTransaction(Account account, double amount, TransactionType transactionType) throws SQLException {
         boolean flag = false;
 
