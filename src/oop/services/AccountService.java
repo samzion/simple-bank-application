@@ -24,6 +24,11 @@ public class AccountService {
         this.connection = connection;
     }
 
+    public AccountService(Connection connection) {
+        this.connection = connection;
+    }
+
+
     public boolean createAccount(User user, String accountNumber, String bank) throws SQLException {
         boolean flag = false;
 

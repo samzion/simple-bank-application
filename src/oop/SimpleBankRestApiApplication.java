@@ -1,5 +1,4 @@
 package oop;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -20,9 +19,14 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import oop.services.AccountService;
+import oop.services.UserService;
+
 
 public class SimpleBankRestApiApplication {
 
@@ -56,6 +60,7 @@ public class SimpleBankRestApiApplication {
 
             UserService userService = new UserService(connection);
             AccountService accountService = new AccountService(connection);
+
             LoanService loanService = new LoanService(connection);
 
             DefaultTransfer genericTransfer = new DefaultTransfer(accountService);
@@ -67,18 +72,24 @@ public class SimpleBankRestApiApplication {
             genericTransfers.add(genericTransfer);
             TransferProcessor transferProcessor = new TransferProcessor(accountService, genericTransfers);
 
+
             // Create a context for a specific path and set the handler
             server.createContext("/", new MyHandler());
             //TODO: Create a landing page path called homeHandler to return all the APIs that is supported.
+
+
             server.createContext("/create-user", new UserCreationHandler(userService));
             server.createContext("/user-login", new UserLoginHandler(userService));
             server.createContext("/create-account", new AccountCreationHandler(userService, accountService));
             server.createContext("/list-accounts", new ListAccountHandler(userService, accountService));
+
             server.createContext("/deposit", new DepositHandler(userService, accountService));
             server.createContext("/withdraw", new WithdrawHandler(userService, accountService));
             server.createContext("/transfer", new TransferHandler(userService,transferProcessor));
             server.createContext("/collect-loan", new CollectLoanHandler(userService, accountService, loanService, transferProcessor, bankCentralAccountNumber));
             server.createContext("/pay-loan", new PayLoanHandler(userService, accountService, loanService, transferProcessor, bankCentralAccountNumber));
+
+
 
             // Start the server
             server.setExecutor(null); // Use the default executor
