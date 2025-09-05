@@ -7,12 +7,20 @@ import oop.models.entities.User;
 import oop.models.requests.WithdrawRequest;
 import oop.models.response.AccountOperationResponse;
 import oop.services.AccountService;
+import oop.services.UserService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class WithdrawHandler extends BaseHandler implements HttpHandler {
+    private AccountService accountService;
+
+    public WithdrawHandler(UserService userService, AccountService accountService){
+        super(userService);
+        this.accountService = accountService;
+
+    }
     public void handle (HttpExchange exchange) throws IOException {
         if(!this.isValidRequestMethod(exchange, "post")) {
             // Handle the request
@@ -36,8 +44,8 @@ public class WithdrawHandler extends BaseHandler implements HttpHandler {
             return;
         }
         try{
-            AccountService accountService = new AccountService();
-            AccountOperationResponse withdrawResponse =accountService.withdraw(authenticatedUser, withdrawRequest.getAccountNumber()
+
+            AccountOperationResponse withdrawResponse =this.accountService.withdraw(authenticatedUser, withdrawRequest.getAccountNumber()
                     , withdrawRequest.getWithdrawAmount());
             SimpleBankRestApiApplication.writeHttpResponse(exchange, withdrawResponse.getStatusCode(), withdrawResponse.getMessage());
 

@@ -7,6 +7,7 @@ import oop.services.AccountService;
 import java.sql.SQLException;
 
 public class UBATransfer implements ITransfer {
+
     protected String bank = "generic";
     public String getBank() {
         return bank;
@@ -14,7 +15,10 @@ public class UBATransfer implements ITransfer {
     public UBATransfer(){
         bank = "uba";
     }
-
+    private AccountService accountService;
+    public UBATransfer(AccountService accountService){
+        this.accountService = accountService;
+    }
     public boolean transfer(double amount, Account source, Account destination){
         boolean withdrawSuccessful = source.withdraw(amount);
         if(withdrawSuccessful){
@@ -35,11 +39,11 @@ public class UBATransfer implements ITransfer {
 
     @Override
     public AccountOperationResponse restTransfer(double amount, Account source, Account destination) throws SQLException, ClassNotFoundException {
-        AccountService accountService = new AccountService();
+
         AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
-        AccountOperationResponse withdrawResponse = accountService.withdraw(source, amount);
+        AccountOperationResponse withdrawResponse = this.accountService.withdraw(source, amount);
         if(withdrawResponse.getStatusCode()== 200){
-            AccountOperationResponse depositResponse = accountService.deposit(destination, amount);
+            AccountOperationResponse depositResponse = this.accountService.deposit(destination, amount);
             if(depositResponse.getStatusCode() == 200) {
                 System.out.println("Using " + bank + " Transfer");
                 accountOperationResponse.setStatusCode(200);

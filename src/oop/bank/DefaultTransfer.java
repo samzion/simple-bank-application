@@ -7,7 +7,14 @@ import oop.services.AccountService;
 import java.sql.SQLException;
 
 public class DefaultTransfer implements ITransfer{
+    private AccountService accountService;
 
+    public DefaultTransfer(){
+        
+    }
+    public DefaultTransfer(AccountService accountService){
+        this.accountService = accountService;
+    }
     protected String bank = "default";
 
     public String getBank() {
@@ -34,11 +41,11 @@ public class DefaultTransfer implements ITransfer{
 
     @Override
     public AccountOperationResponse restTransfer(double amount, Account source, Account destination) throws SQLException, ClassNotFoundException {
-        AccountService accountService = new AccountService();
+
         AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
-        AccountOperationResponse withdrawResponse = accountService.withdraw(source, amount);
+        AccountOperationResponse withdrawResponse = this.accountService.withdraw(source, amount);
         if(withdrawResponse.getStatusCode()== 200){
-           AccountOperationResponse depositResponse = accountService.deposit(destination, amount);
+           AccountOperationResponse depositResponse = this.accountService.deposit(destination, amount);
             if(depositResponse.getStatusCode() == 200) {
                 System.out.println("Using " + bank + " Transfer");
                 accountOperationResponse.setStatusCode(200);

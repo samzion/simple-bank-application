@@ -20,6 +20,9 @@ public class AccountService {
        connection = DataBaseConnection.getConnection();
     }
 
+    public AccountService(Connection connection) {
+        this.connection = connection;
+    }
 
     public AccountService(Connection connection) {
         this.connection = connection;

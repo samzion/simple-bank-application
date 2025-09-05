@@ -7,12 +7,19 @@ import oop.models.entities.User;
 import oop.models.requests.DepositRequest;
 import oop.models.response.AccountOperationResponse;
 import oop.services.AccountService;
+import oop.services.UserService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class DepositHandler  extends BaseHandler implements HttpHandler {
+    public AccountService accountService;
+
+    public DepositHandler(UserService userService, AccountService accountService){
+        super(userService);
+        this.accountService = accountService;
+    }
     public void handle (HttpExchange exchange) throws IOException {
         if(!this.isValidRequestMethod(exchange, "post")) {
             // Handle the request
@@ -36,8 +43,7 @@ public class DepositHandler  extends BaseHandler implements HttpHandler {
             return;
         }
         try{
-            AccountService accountService = new AccountService();
-            AccountOperationResponse depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
+            AccountOperationResponse depositResponse =this.accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
                     , depositRequest.getDepositAmount());
             SimpleBankRestApiApplication.writeHttpResponse(exchange, depositResponse.getStatusCode(), depositResponse.getMessage());
 

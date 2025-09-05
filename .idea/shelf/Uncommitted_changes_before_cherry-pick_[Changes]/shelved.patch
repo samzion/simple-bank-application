@@ -1,0 +1,257 @@
+Index: src/oop/services/AccountService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package oop.services;\r\n\r\nimport oop.TransactionType;\r\nimport oop.db.DataBaseConnection;\r\nimport oop.models.entities.Account;\r\nimport oop.models.entities.User;\r\n\r\nimport java.sql.Connection;\r\nimport java.sql.PreparedStatement;\r\nimport java.sql.ResultSet;\r\nimport java.sql.SQLException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class AccountService {\r\n    Connection connection ;\r\n\r\n    public AccountService() throws SQLException, ClassNotFoundException {\r\n       connection = DataBaseConnection.getConnection();\r\n    }\r\n\r\n\r\n    public boolean createAccount(User user, String accountNumber, String bank) throws SQLException {\r\n        boolean flag = false;\r\n\r\n        String query = \"\"\"\r\n                        INSERT INTO accounts\r\n                            (user_id, account_number, account_name, bank)\r\n                            values (?, ?, ?, ?)\r\n                       \"\"\";\r\n        PreparedStatement statement = connection.prepareStatement(query);\r\n        statement.setInt(1, user.getId());\r\n        statement.setString(2, accountNumber);\r\n        statement.setString(3, user.getFirstName() + \" \"+ user.getLastName());\r\n        statement.setString(4, bank);\r\n        statement.executeUpdate();\r\n        System.out.println(\"Account Created successfully!\");\r\n        return true;\r\n    }\r\n\r\n    public boolean updateAccount(Account account) throws SQLException {\r\n        boolean flag = false;\r\n\r\n        String query = \"\"\"\r\n                        UPDATE accounts\r\n                                  SET balance = ?,\r\n                                  updated_on = CURRENT_TIMESTAMP\r\n                                  WHERE account_number = ?;\r\n                       \"\"\";\r\n        PreparedStatement statement = connection.prepareStatement(query);\r\n        statement.setDouble(1, account.getBalance());\r\n        statement.setString(2, account.getAccountNumber());\r\n        statement.executeUpdate();\r\n        System.out.println(\"Account updated successfully!\");\r\n        return true;\r\n    }\r\n\r\n    public List<Account> listAccount(User user) throws SQLException {\r\n        String query = \"\"\"\r\n                        SELECT *\r\n                        FROM accounts\r\n                        WHERE user_id = ?\r\n                       \"\"\";\r\n        PreparedStatement statement = connection.prepareStatement(query);\r\n        statement.setInt(1, user.getId());\r\n        ResultSet rs = statement.executeQuery();\r\n        List<Account> accounts = new ArrayList<>();\r\n        while(true){\r\n            if(rs.next()){\r\n                Account account = new Account();\r\n                account.setId(rs.getInt(\"id\"));\r\n                account.setUserID(rs.getInt(\"user_id\"));\r\n                account.setAccountNumber(rs.getString(\"account_number\"));\r\n                account.setAccountName(rs.getString(\"account_name\"));\r\n                account.setBank(rs.getString(\"bank\"));\r\n                account.setBalance(rs.getInt(\"balance\"));\r\n                account.setCreatedON(rs.getTimestamp(\"created_on\").toLocalDateTime());\r\n                account.setUpdatedON(rs.getTimestamp(\"updated_on\").toLocalDateTime());\r\n                accounts.add(account);\r\n            } else {\r\n                break;\r\n            }\r\n        }\r\n        return  accounts;\r\n    }\r\n\r\n    public Account confirmAccountDetails(String accountNumber) throws SQLException {\r\n        String queryLoginDetails = \"SELECT * FROM accounts WHERE account_number = ?\";\r\n        PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);\r\n        pStatement.setString(1, accountNumber);\r\n        ResultSet rs = pStatement.executeQuery();\r\n        Account account = new Account();\r\n        if (rs.next()) {\r\n            System.out.println(\"The account number exist.\");\r\n            account.setId(rs.getInt(\"id\"));\r\n            account.setAccountNumber(rs.getString(\"account_number\"));\r\n            account.setUserID(rs.getInt(\"user_id\"));\r\n            account.setAccountName(rs.getString(\"account_name\"));\r\n            account.setBank(rs.getString(\"bank\"));\r\n            account.setBalance(rs.getDouble(\"balance\"));\r\n            account.setCreatedON(rs.getTimestamp(\"created_on\").toLocalDateTime());\r\n            account.setUpdatedON(rs.getTimestamp(\"updated_on\").toLocalDateTime());\r\n            return account;\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public Account confirmAccountDetails(int accountId) throws SQLException {\r\n        String queryLoginDetails = \"SELECT * FROM accounts WHERE id = ?\";\r\n        PreparedStatement pStatement = connection.prepareStatement(queryLoginDetails);\r\n        pStatement.setInt(1, accountId);\r\n        ResultSet rs = pStatement.executeQuery();\r\n        Account account = new Account();\r\n        if (rs.next()) {\r\n            System.out.println(\"The account number exist.\");\r\n            account.setId(rs.getInt(\"id\"));\r\n            account.setAccountNumber(rs.getString(\"account_number\"));\r\n            account.setUserID(rs.getInt(\"user_id\"));\r\n            account.setAccountName(rs.getString(\"account_name\"));\r\n            account.setBank(rs.getString(\"bank\"));\r\n            account.setBalance(rs.getDouble(\"balance\"));\r\n            account.setCreatedON(rs.getTimestamp(\"created_on\").toLocalDateTime());\r\n            account.setUpdatedON(rs.getTimestamp(\"updated_on\").toLocalDateTime());\r\n            return account;\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public String deposit( User user, String accountNumber, double depositAmt) throws SQLException, ClassNotFoundException {\r\n        if(depositAmt <=100){\r\n            System.out.println( \"Invalid figure\");\r\n            return \"Invalid figure\";\r\n        }\r\n        List<Account> accounts = new AccountService().listAccount(user);\r\n        if(accounts == null){\r\n            return \"You have no existing account\";\r\n        }\r\n        for(Account account: accounts){\r\n            if(account.getAccountNumber().equalsIgnoreCase(accountNumber)){\r\n                TransactionService transactionService = new TransactionService();\r\n                double balance =  account.getBalance();\r\n                balance+=depositAmt;\r\n                account.setBalance(balance);\r\n                AccountService accountService = new AccountService();\r\n                if(accountService.updateAccount(account)){\r\n                    transactionService.createTransaction(account, depositAmt, TransactionType.CREDIT);\r\n                    System.out.println(\"Deposit of \" + depositAmt + \" into \" + account.getAccountNumber() + \"'s account is successful\");\r\n                    return \"Deposit request successful!\";\r\n                }\r\n            }\r\n        }\r\n        return \"Invalid account number\";\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/oop/services/AccountService.java b/src/oop/services/AccountService.java
+--- a/src/oop/services/AccountService.java	(revision 7c8551163d3666bc77d76f8366b1d8358bb80637)
++++ b/src/oop/services/AccountService.java	(date 1756937581531)
+@@ -4,6 +4,7 @@
+ import oop.db.DataBaseConnection;
+ import oop.models.entities.Account;
+ import oop.models.entities.User;
++import oop.models.response.AccountOperationResponse;
+ 
+ import java.sql.Connection;
+ import java.sql.PreparedStatement;
+@@ -38,7 +39,7 @@
+         return true;
+     }
+ 
+-    public boolean updateAccount(Account account) throws SQLException {
++    public boolean updateAccountBalance(Account account) throws SQLException {
+         boolean flag = false;
+ 
+         String query = """
+@@ -126,14 +127,18 @@
+         return null;
+     }
+ 
+-    public String deposit( User user, String accountNumber, double depositAmt) throws SQLException, ClassNotFoundException {
++    public AccountOperationResponse deposit(User user, String accountNumber, double depositAmt) throws SQLException, ClassNotFoundException {
++        AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
+         if(depositAmt <=100){
+-            System.out.println( "Invalid figure");
+-            return "Invalid figure";
++           accountOperationResponse.setStatusCode(400);
++           accountOperationResponse.setMessage("Invalid figure");
++            return accountOperationResponse;
+         }
+         List<Account> accounts = new AccountService().listAccount(user);
+         if(accounts == null){
+-            return "You have no existing account";
++            accountOperationResponse.setStatusCode(404);
++            accountOperationResponse.setMessage("You have no existing account");
++            return accountOperationResponse;
+         }
+         for(Account account: accounts){
+             if(account.getAccountNumber().equalsIgnoreCase(accountNumber)){
+@@ -142,14 +147,18 @@
+                 balance+=depositAmt;
+                 account.setBalance(balance);
+                 AccountService accountService = new AccountService();
+-                if(accountService.updateAccount(account)){
++                if(accountService.updateAccountBalance(account)){
+                     transactionService.createTransaction(account, depositAmt, TransactionType.CREDIT);
+                     System.out.println("Deposit of " + depositAmt + " into " + account.getAccountNumber() + "'s account is successful");
+-                    return "Deposit request successful!";
++                    accountOperationResponse.setStatusCode(200);
++                    accountOperationResponse.setMessage("Deposit request successful!");
++                    return accountOperationResponse;
+                 }
+             }
+         }
+-        return "Invalid account number";
++        accountOperationResponse.setStatusCode(400);
++        accountOperationResponse.setMessage("Invalid account number");
++        return accountOperationResponse;
+     }
+ 
+ }
+Index: src/oop/httpHandlers/DepositHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package oop.httpHandlers;\r\n\r\nimport com.sun.net.httpserver.HttpExchange;\r\nimport com.sun.net.httpserver.HttpHandler;\r\nimport oop.SimpleBankRestApiApplication;\r\nimport oop.models.entities.User;\r\nimport oop.models.requests.DepositRequest;\r\nimport oop.services.AccountService;\r\n\r\nimport java.io.IOException;\r\nimport java.io.InputStream;\r\nimport java.nio.charset.StandardCharsets;\r\n\r\npublic class DepositHandler  extends BaseHandler implements HttpHandler {\r\n    public void handle (HttpExchange exchange) throws IOException {\r\n        if(!this.isValidRequestMethod(exchange, \"post\")) {\r\n            // Handle the request\r\n            String response = \"Method not allowed\";\r\n            SimpleBankRestApiApplication.writeHttpResponse(exchange, 405, response);\r\n            return;\r\n        }\r\n        User authenticatedUser = this.getAuthenticatedUser(exchange);\r\n        if(authenticatedUser == null) {\r\n            SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, \"Unauthorized!\");\r\n            return;\r\n        }\r\n        String body = \"{}\";\r\n        try (InputStream input = exchange.getRequestBody()) {\r\n            body =  new String(input.readAllBytes(), StandardCharsets.UTF_8);\r\n        }\r\n        DepositRequest depositRequest = gson.fromJson(body, DepositRequest.class);\r\n        String validationMessage = DepositRequest.validate(depositRequest);\r\n        if(!validationMessage.equals(\"Deposit request okay!\")){\r\n            SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, validationMessage);\r\n            return;\r\n        }\r\n        try{\r\n            AccountService accountService = new AccountService();\r\n            String depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()\r\n                    , depositRequest.getDepositAmount());\r\n            if(depositResponse.equalsIgnoreCase(\"Deposit request successful!\")){\r\n                SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, depositResponse);\r\n                return;\r\n            }\r\n            if(depositResponse.equalsIgnoreCase(\"You have no existing account\")){\r\n                SimpleBankRestApiApplication.writeHttpResponse(exchange, 404, depositResponse);\r\n                return;\r\n            }\r\n            if(depositResponse.equalsIgnoreCase(\"Invalid account number\")){\r\n                SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, depositResponse);\r\n            }\r\n\r\n        } catch (Exception e) {\r\n            SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, \"Unknown error from server\");\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/oop/httpHandlers/DepositHandler.java b/src/oop/httpHandlers/DepositHandler.java
+--- a/src/oop/httpHandlers/DepositHandler.java	(revision 7c8551163d3666bc77d76f8366b1d8358bb80637)
++++ b/src/oop/httpHandlers/DepositHandler.java	(date 1756937758941)
+@@ -5,6 +5,7 @@
+ import oop.SimpleBankRestApiApplication;
+ import oop.models.entities.User;
+ import oop.models.requests.DepositRequest;
++import oop.models.response.AccountOperationResponse;
+ import oop.services.AccountService;
+ 
+ import java.io.IOException;
+@@ -36,19 +37,9 @@
+         }
+         try{
+             AccountService accountService = new AccountService();
+-            String depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
++            AccountOperationResponse depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
+                     , depositRequest.getDepositAmount());
+-            if(depositResponse.equalsIgnoreCase("Deposit request successful!")){
+-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, depositResponse);
+-                return;
+-            }
+-            if(depositResponse.equalsIgnoreCase("You have no existing account")){
+-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 404, depositResponse);
+-                return;
+-            }
+-            if(depositResponse.equalsIgnoreCase("Invalid account number")){
+-                SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, depositResponse);
+-            }
++            SimpleBankRestApiApplication.writeHttpResponse(exchange, depositResponse.getStatusCode(), depositResponse.getMessage());
+ 
+         } catch (Exception e) {
+             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
+Index: src/oop/models/requests/TransferRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/oop/models/requests/TransferRequest.java b/src/oop/models/requests/TransferRequest.java
+new file mode 100644
+--- /dev/null	(date 1756936078241)
++++ b/src/oop/models/requests/TransferRequest.java	(date 1756936078241)
+@@ -0,0 +1,36 @@
++package oop.models.requests;
++
++public class TransferRequest {
++    private String accountNumber;
++    private double depositAmount;
++
++    public String getAccountNumber() {
++        return accountNumber;
++    }
++
++    public void setAccountNumber(String accountNumber) {
++        this.accountNumber = accountNumber;
++    }
++
++    public double getDepositAmount() {
++        return depositAmount;
++    }
++
++    public void setDepositAmount(double amount) {
++        this.depositAmount = amount;
++    }
++
++    public static String validate(TransferRequest depositRequest){
++        if(depositRequest == null){
++            return "Deposit request cannot be null";
++        }
++        if(depositRequest.getAccountNumber() == null){
++            return "Account number cannot be null";
++        }
++        if(depositRequest.getDepositAmount() < 100 ){
++            return "Deposit Amount cannot be less than 100";
++        }
++        return "Deposit request okay!";
++    }
++
++}
+Index: src/oop/models/response/AccountOperationResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/oop/models/response/AccountOperationResponse.java b/src/oop/models/response/AccountOperationResponse.java
+new file mode 100644
+--- /dev/null	(date 1756937057000)
++++ b/src/oop/models/response/AccountOperationResponse.java	(date 1756937057000)
+@@ -0,0 +1,22 @@
++package oop.models.response;
++
++public class AccountOperationResponse {
++    public int statusCode;
++    public String message;
++
++    public int getStatusCode() {
++        return statusCode;
++    }
++
++    public void setStatusCode(int statusCode) {
++        this.statusCode = statusCode;
++    }
++
++    public String getMessage() {
++        return message;
++    }
++
++    public void setMessage(String message) {
++        this.message = message;
++    }
++}
+Index: src/oop/httpHandlers/TransferHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/oop/httpHandlers/TransferHandler.java b/src/oop/httpHandlers/TransferHandler.java
+new file mode 100644
+--- /dev/null	(date 1756936156023)
++++ b/src/oop/httpHandlers/TransferHandler.java	(date 1756936156023)
+@@ -0,0 +1,57 @@
++package oop.httpHandlers;
++
++import com.sun.net.httpserver.HttpExchange;
++import com.sun.net.httpserver.HttpHandler;
++import oop.SimpleBankRestApiApplication;
++import oop.models.entities.User;
++import oop.models.requests.TransferRequest;
++import oop.services.AccountService;
++
++import java.io.IOException;
++import java.io.InputStream;
++import java.nio.charset.StandardCharsets;
++
++public class TransferHandler extends BaseHandler implements HttpHandler {
++    public void handle (HttpExchange exchange) throws IOException {
++        if(!this.isValidRequestMethod(exchange, "post")) {
++            // Handle the request
++            String response = "Method not allowed";
++            SimpleBankRestApiApplication.writeHttpResponse(exchange, 405, response);
++            return;
++        }
++        User authenticatedUser = this.getAuthenticatedUser(exchange);
++        if(authenticatedUser == null) {
++            SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, "Unauthorized!");
++            return;
++        }
++        String body = "{}";
++        try (InputStream input = exchange.getRequestBody()) {
++            body =  new String(input.readAllBytes(), StandardCharsets.UTF_8);
++        }
++        TransferRequest transferRequest = gson.fromJson(body, TransferRequest.class);
++        String validationMessage = TransferRequest.validate(transferRequest);
++        if(!validationMessage.equals("Deposit request okay!")){
++            SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, validationMessage);
++            return;
++        }
++        try{
++            AccountService accountService = new AccountService();
++            String depositResponse =accountService.deposit(authenticatedUser, depositRequest.getAccountNumber()
++                    , depositRequest.getDepositAmount());
++            if(depositResponse.equalsIgnoreCase("Deposit request successful!")){
++                SimpleBankRestApiApplication.writeHttpResponse(exchange, 200, depositResponse);
++                return;
++            }
++            if(depositResponse.equalsIgnoreCase("You have no existing account")){
++                SimpleBankRestApiApplication.writeHttpResponse(exchange, 404, depositResponse);
++                return;
++            }
++            if(depositResponse.equalsIgnoreCase("Invalid account number")){
++                SimpleBankRestApiApplication.writeHttpResponse(exchange, 400, depositResponse);
++            }
++
++        } catch (Exception e) {
++            SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
++        }
++    }
++}
