@@ -22,7 +22,7 @@ public class WithdrawalScreen {
             if(account.withdraw(amountToWithdraw)){
                 AccountService accountService = new AccountService();
                 TransactionService transactionService =  new TransactionService();
-                if(accountService.updateAccount(account) &&
+                if(accountService.updateAccountBalance(account) &&
                         transactionService.createTransaction(account, amountToWithdraw, TransactionType.DEBIT)){
                     return;
                 }

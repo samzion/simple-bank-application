@@ -34,9 +34,9 @@ public class TransferScreen {
                 TransactionService transactionService =  new TransactionService();
                 sourceAccount.setBalance(sourceAccount.getBalance());
                 destinationAccount.setBalance(destinationAccount.getBalance());
-                if(accountService.updateAccount(sourceAccount) &&
+                if(accountService.updateAccountBalance(sourceAccount) &&
                         transactionService.createTransaction(sourceAccount, amountToTransfer, TransactionType.DEBIT)){
-                    accountService.updateAccount(destinationAccount);
+                    accountService.updateAccountBalance(destinationAccount);
                     transactionService.createTransaction(destinationAccount, amountToTransfer, TransactionType.CREDIT);
                     return;
                 }

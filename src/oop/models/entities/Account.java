@@ -179,8 +179,8 @@ public class Account {
                 loan.amountPaid+= amountToBePaid;
                 amount = amount - loan.amountBorrowed-loan.amountPaid;
                 loanService.updateLoan(loan);
-                accountService.updateAccount(this);
-                accountService.updateAccount(lenderAccount);
+                accountService.updateAccountBalance(this);
+                accountService.updateAccountBalance(lenderAccount);
                 transactionService.createTransaction(this, amountToBePaid, TransactionType.DEBIT);
                 transactionService.createTransaction(lenderAccount, amountToBePaid, TransactionType.CREDIT);
 
@@ -189,8 +189,8 @@ public class Account {
                 loan.amountPaid+=amount;
                 System.out.println("Loan payment successful!!!");
                 loanService.updateLoan(loan);
-                accountService.updateAccount(this);
-                accountService.updateAccount(lenderAccount);
+                accountService.updateAccountBalance(this);
+                accountService.updateAccountBalance(lenderAccount);
                 transactionService.createTransaction(this, amount, TransactionType.DEBIT);
                 transactionService.createTransaction(lenderAccount, amount, TransactionType.CREDIT);
                 return true;

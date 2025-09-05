@@ -29,8 +29,8 @@ public class CollectLoanScreen {
                 TransactionService transactionService =  new TransactionService();
                 destinationAcct.setBalance(destinationAcct.getBalance());
                 sourceAccount.setBalance(sourceAccount.getBalance());
-                if(accountService.updateAccount(destinationAcct) && transactionService.createTransaction(destinationAcct, loanAmount, TransactionType.CREDIT)){
-                       accountService.updateAccount(sourceAccount);
+                if(accountService.updateAccountBalance(destinationAcct) && transactionService.createTransaction(destinationAcct, loanAmount, TransactionType.CREDIT)){
+                       accountService.updateAccountBalance(sourceAccount);
                        transactionService.createTransaction(sourceAccount, loanAmount, TransactionType.DEBIT);
                        LoanService loanService = new LoanService();
                        if(loanService.createLoan(destinationAcct, loanAmount)){

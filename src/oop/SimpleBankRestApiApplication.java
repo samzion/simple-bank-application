@@ -4,10 +4,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import oop.db.DataBaseConnection;
 import oop.db.migrations.MigrationRunner;
-import oop.httpHandlers.AccountCreationHandler;
-import oop.httpHandlers.ListAccountHandler;
-import oop.httpHandlers.UserCreationHandler;
-import oop.httpHandlers.UserLoginHandler;
+import oop.httpHandlers.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,10 +33,19 @@ public class SimpleBankRestApiApplication {
             // Create a context for a specific path and set the handler
             server.createContext("/", new MyHandler());
             //TODO: Create a landing page path called homeHandler to return all the APIs that is supported.
+
+           
+            server.createContext("/deposit", new DepositHandler());
+            server.createContext("/withdraw", new WithdrawHandler());
+            server.createContext("/transfer", new TransferHandler());
+            server.createContext("/collect-loan", new CollectLoanHandler());
+            server.createContext("/pay-loan", new PayLoanHandler());
+
             server.createContext("/create-user", new UserCreationHandler(userService));
             server.createContext("/user-login", new UserLoginHandler(userService));
             server.createContext("/create-account", new AccountCreationHandler(userService, accountService));
             server.createContext("/list-accounts", new ListAccountHandler(userService, accountService));
+
             server.createContext("/search", new SearchHandler());
 
             // Start the server

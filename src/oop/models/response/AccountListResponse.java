@@ -1,4 +1,4 @@
-package oop.models.requests;
+package oop.models.response;
 
 import oop.models.entities.Account;
 
