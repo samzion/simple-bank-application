@@ -56,7 +56,7 @@ public class SimpleBankRestApiApplication {
 
             UserService userService = new UserService(connection);
             AccountService accountService = new AccountService(connection);
-            LoanService loanService = new LoanService();
+            LoanService loanService = new LoanService(connection);
 
             DefaultTransfer genericTransfer = new DefaultTransfer(accountService);
             GTBTransfer gtbTransfer = new GTBTransfer(accountService);

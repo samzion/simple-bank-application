@@ -23,6 +23,7 @@ public class CollectLoanHandler extends BaseHandler implements HttpHandler {
     public LoanService loanService;
     public TransferProcessor transferProcessor;
     String bankCentralAccountNumber;
+
     public CollectLoanHandler(UserService userService, AccountService accountService, LoanService loanService, TransferProcessor transferProcessor, String bankCentralAccountNumber){
         super(userService);
         this.accountService = accountService;
