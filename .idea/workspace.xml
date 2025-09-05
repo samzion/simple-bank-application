@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="06292daf-0457-4b4d-b64d-a5196b527265" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/oop/configuration.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/oop/SimpleBankRestApiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/oop/SimpleBankRestApiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/oop/configuration.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/oop/configuration.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/oop/db/DataBaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/oop/db/DataBaseConnection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -24,6 +25,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="OptimizeOnSaveOptions">
@@ -54,7 +60,7 @@
     "Application.RecursiveMethods.executor": "Run",
     "Application.SelectionSort.executor": "Debug",
     "Application.SimpleBankApplication.executor": "Run",
-    "Application.SimpleBankRestApiApplication.executor": "Run",
+    "Application.SimpleBankRestApiApplication.executor": "Debug",
     "Application.SwapVariableTest.executor": "Run",
     "Application.TestLinkedList2.executor": "Run",
     "Application.Unnamed.executor": "Run",
@@ -149,6 +155,8 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.DataBaseConnection" />
         <item itemvalue="Application.DataBaseConnection" />
         <item itemvalue="Application.Main" />
       </list>
@@ -294,6 +302,11 @@
           <url>file://$PROJECT_DIR$/src/oop/httpHandlers/PayLoanHandler.java</url>
           <line>35</line>
           <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/oop/SimpleBankRestApiApplication.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/Time.java/src/SelectionSort.java</url>

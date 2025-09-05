@@ -29,16 +29,25 @@ public class SimpleBankRestApiApplication {
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
         //read from configuration.properties file for all necessary entities to work with
-        Properties properties = new Properties();
-        properties.load(new FileInputStream("configuration.properties"));
-        String dbUrl = properties.getProperty("dbUrl");
-        String user = properties.getProperty("user");
-        String password = properties.getProperty("password");
-        String className = properties.getProperty("className");
-        String bankCentralAccountNumber = properties.getProperty("bankCentralAccountNumber");
 
-        Connection connection = DataBaseConnection.getConnection(dbUrl, user, password, className);
+        // Load configuration from file
+        Properties props = new Properties();
+        props.load(new FileInputStream("configuration.properties"));
 
+        String url = props.getProperty("dbUrl");
+        String user = props.getProperty("dbUser");
+        String password = props.getProperty("dbPassword");
+        String driver = props.getProperty("dbDriver");
+        String bankCentralAccountNumber = props.getProperty("bankCentralAccountNumber");
+
+        // Initialize once
+        DataBaseConnection.initialize(url, user, password, driver);
+
+        // Now you can call getConnection without arguments
+        Connection connection = DataBaseConnection.getConnection();
+        System.out.println("Connected successfully: " + connection.getMetaData().getDatabaseProductName());
+
+        
         MigrationRunner migrationRunner = new MigrationRunner();
         migrationRunner.runMigrations(connection);
         try {
@@ -106,5 +115,11 @@ public class SimpleBankRestApiApplication {
             os.close();
         }
     }
-
+    public static void writeHttpResponse(HttpExchange exchange, int statusCode, String responseMessage) throws IOException {
+        // Handle the request
+        exchange.sendResponseHeaders(statusCode, responseMessage.length());
+        OutputStream os = exchange.getResponseBody();
+        os.write(responseMessage.getBytes());
+        os.close();
+    }
 }
