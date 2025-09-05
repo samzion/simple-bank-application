@@ -8,16 +8,21 @@ import oop.SimpleBankRestApiApplication;
 import oop.models.entities.User;
 import oop.models.requests.UserCreationRequest;
 import oop.others.LocalDateTimeAdapter;
-import oop.services.UserService;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
+import oop.services.UserService;
 
 public class UserCreationHandler implements HttpHandler {
+
+    private UserService userService;
+
+    public UserCreationHandler(UserService userService){
+        this.userService = userService;
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
@@ -42,8 +47,8 @@ public class UserCreationHandler implements HttpHandler {
         }
         User newCreatedUser= null;
         try {
-            UserService userService = new UserService();
-            newCreatedUser = userService.createUser(userCreationRequest);
+
+            newCreatedUser = this.userService.createUser(userCreationRequest);
             if(newCreatedUser == null){
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unable to create user");
             } else {
