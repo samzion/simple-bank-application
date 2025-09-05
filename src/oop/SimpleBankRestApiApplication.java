@@ -60,7 +60,6 @@ public class SimpleBankRestApiApplication {
             server.createContext("/transfer", new TransferHandler(userService,transferProcessor));
             server.createContext("/collect-loan", new CollectLoanHandler(userService, accountService, loanService, transferProcessor));
             server.createContext("/pay-loan", new PayLoanHandler(userService, accountService, loanService, transferProcessor));
-            server.createContext("/search", new SearchHandler());
 
             // Start the server
             server.setExecutor(null); // Use the default executor
@@ -97,37 +96,4 @@ public class SimpleBankRestApiApplication {
         }
     }
 
-    // Define a custom HttpHandler
-
-
-    // Define a custom HttpHandler
-    static class SearchHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            String method = exchange.getRequestMethod();
-            if (!"get".equalsIgnoreCase(method)) {
-                // Handle the request
-                String response = "Method not allowed";
-                exchange.sendResponseHeaders(405, response.length());
-                OutputStream os = exchange.getResponseBody();
-                os.write(response.getBytes());
-                os.close();
-                return;
-            }
-            // Handle the request
-            String response = exchange.getRequestURI().getQuery();
-            exchange.sendResponseHeaders(200, response.length());
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        }
-    }
-
-    public static void writeHttpResponse(HttpExchange exchange, int statusCode, String responseMessage) throws IOException {
-        // Handle the request
-        exchange.sendResponseHeaders(statusCode, responseMessage.length());
-        OutputStream os = exchange.getResponseBody();
-        os.write(responseMessage.getBytes());
-        os.close();
-    }
 }

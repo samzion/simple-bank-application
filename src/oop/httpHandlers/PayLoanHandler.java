@@ -57,15 +57,14 @@ public class PayLoanHandler extends BaseHandler implements HttpHandler {
 
         Account sourceAccount = new Account();
         try {
-            AccountService accountService = new AccountService();
-            sourceAccount = accountService.confirmAccountDetails(payLoanRequest.getSourceAccountNumber());
+            sourceAccount = this.accountService.confirmAccountDetails(payLoanRequest.getSourceAccountNumber());
 
             if (sourceAccount == null) {
                 SimpleBankRestApiApplication.writeHttpResponse(exchange, 404, "Source account not found");
                 return;
             }
 
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 500, "Unknown error from server");
         }
 
