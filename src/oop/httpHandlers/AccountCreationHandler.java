@@ -23,7 +23,7 @@ public class AccountCreationHandler extends BaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        if(!this.isValidRequestMethod(exchange, "post")) {
+        if(!this.isValidRequestMethod(exchange, "get")) {
             // Handle the request
             String response = "Method not allowed";
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 405, response);
