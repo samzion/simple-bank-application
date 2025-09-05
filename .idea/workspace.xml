@@ -46,42 +46,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BubbleSort.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.DataBaseConnection.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DataStructure.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.Date.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Date5.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DiagonalDifference.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Doubloon.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Hello2.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Initials.executor&quot;: &quot;Run&quot;,
-    &quot;Application.InsertionSort.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MergeSort.executor&quot;: &quot;Run&quot;,
-    &quot;Application.RecursiveMethods.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SelectionSort.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SimpleBankApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SimpleBankRestApiApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.SwapVariableTest.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TestLinkedList2.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;Application.binarySearch.executor&quot;: &quot;Debug&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;add-configuration-file&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/IdeaProjects/study&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/DELL/source/repos/study/src/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BubbleSort.executor": "Debug",
+    "Application.DataBaseConnection.executor": "Run",
+    "Application.DataStructure.executor": "Debug",
+    "Application.Date.executor": "Run",
+    "Application.Date5.executor": "Run",
+    "Application.DiagonalDifference.executor": "Run",
+    "Application.Doubloon.executor": "Run",
+    "Application.Hello2.executor": "Run",
+    "Application.Initials.executor": "Run",
+    "Application.InsertionSort.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.MergeSort.executor": "Run",
+    "Application.RecursiveMethods.executor": "Run",
+    "Application.SelectionSort.executor": "Debug",
+    "Application.SimpleBankApplication.executor": "Run",
+    "Application.SimpleBankRestApiApplication.executor": "Run",
+    "Application.SwapVariableTest.executor": "Run",
+    "Application.TestLinkedList2.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "Application.binarySearch.executor": "Debug",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "add-configuration-file",
+    "last_opened_file_path": "C:/Users/User/IdeaProjects/study",
+    "onboarding.tips.debug.path": "C:/Users/DELL/source/repos/study/src/Main.java",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "actions.on.save"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="oop.models.requests" />
@@ -291,11 +291,6 @@
           <url>file://$PROJECT_DIR$/src/oop/httpHandlers/PayLoanHandler.java</url>
           <line>35</line>
           <option name="timeStamp" value="94" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/oop/SimpleBankRestApiApplication.java</url>
-          <line>33</line>
-          <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/Time.java/src/SelectionSort.java</url>
