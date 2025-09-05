@@ -44,7 +44,7 @@ public class CollectLoanHandler extends BaseHandler implements HttpHandler {
             SimpleBankRestApiApplication.writeHttpResponse(exchange, 401, "Unauthorized!");
             return;
         }
-        String body = "{}";
+        String body;
         try (InputStream input = exchange.getRequestBody()) {
             body =  new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
