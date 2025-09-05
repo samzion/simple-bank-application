@@ -23,12 +23,14 @@ public class PayLoanHandler extends BaseHandler implements HttpHandler {
     public AccountService accountService;
     public LoanService loanService;
     public TransferProcessor transferProcessor;
+    String bankCentralAccountNumber = "1018521126";//Sammy Bank Central account number
 
-    public PayLoanHandler(UserService userService, AccountService accountService, LoanService loanService, TransferProcessor transferProcessor){
+    public PayLoanHandler(UserService userService, AccountService accountService, LoanService loanService, TransferProcessor transferProcessor, String bankCentralAccountNumber){
         super(userService);
         this.accountService = accountService;
         this.loanService = loanService;
         this.transferProcessor = transferProcessor;
+        this.bankCentralAccountNumber = bankCentralAccountNumber;
     }
 
 
@@ -69,7 +71,7 @@ public class PayLoanHandler extends BaseHandler implements HttpHandler {
         }
 
         try{
-            String destinationAccountNumber = "1018521126";//Sammy Bank Central account number
+
             List<Loan> loans;
             loans = loanService.listLoans(sourceAccount);
             if(loans.isEmpty()){
@@ -88,7 +90,7 @@ public class PayLoanHandler extends BaseHandler implements HttpHandler {
 
                 double amountToBePaid = loan.getAmountBorrowed() - loan.getAmountPaid();
                 if(loan.getAmountPaid() < loan.getAmountBorrowed() && amount > amountToBePaid){
-                    AccountOperationResponse transferResponse = this.transferProcessor.transfer(authenticatedUser, payLoanRequest.getSourceAccountNumber(), destinationAccountNumber,amountToBePaid);
+                    AccountOperationResponse transferResponse = this.transferProcessor.transfer(authenticatedUser, payLoanRequest.getSourceAccountNumber(), bankCentralAccountNumber,amountToBePaid);
                     transferResultMessage += "  " + transferResponse.getMessage();
                     if(transferResponse.getStatusCode()== 200){
                         loan.setAmountPaid( loan.getAmountPaid() + amountToBePaid);
@@ -100,7 +102,7 @@ public class PayLoanHandler extends BaseHandler implements HttpHandler {
                     }
                     isLoanAvailable = true;
                 } else if(loan.getAmountPaid() < loan.getAmountBorrowed() && amount <= amountToBePaid) {
-                    AccountOperationResponse transferResponse =this.transferProcessor.transfer(authenticatedUser, payLoanRequest.getSourceAccountNumber(), destinationAccountNumber,amount);
+                    AccountOperationResponse transferResponse =this.transferProcessor.transfer(authenticatedUser, payLoanRequest.getSourceAccountNumber(), bankCentralAccountNumber,amount);
                     transferResultMessage += "  " + transferResponse.getMessage();
                     if(transferResponse.getStatusCode()== 200){
                         loan.setAmountPaid( loan.getAmountPaid() + amount);

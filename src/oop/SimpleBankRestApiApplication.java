@@ -14,6 +14,7 @@ import oop.services.AccountService;
 import oop.services.LoanService;
 import oop.services.UserService;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -21,13 +22,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class SimpleBankRestApiApplication {
 
-    // http(s)://host:port/create-user?firstName=kayode&lastName
-    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
 
-        Connection connection = DataBaseConnection.getConnection();
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
+        //read from configuration.properties file for all necessary entities to work with
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("configuration.properties"));
+        String dbUrl = properties.getProperty("dbUrl");
+        String user = properties.getProperty("user");
+        String password = properties.getProperty("password");
+        String className = properties.getProperty("className");
+        String bankCentralAccountNumber = properties.getProperty("bankCentralAccountNumber");
+
+        Connection connection = DataBaseConnection.getConnection(dbUrl, user, password, className);
 
         MigrationRunner migrationRunner = new MigrationRunner();
         migrationRunner.runMigrations(connection);
@@ -58,8 +68,8 @@ public class SimpleBankRestApiApplication {
             server.createContext("/deposit", new DepositHandler(userService, accountService));
             server.createContext("/withdraw", new WithdrawHandler(userService, accountService));
             server.createContext("/transfer", new TransferHandler(userService,transferProcessor));
-            server.createContext("/collect-loan", new CollectLoanHandler(userService, accountService, loanService, transferProcessor));
-            server.createContext("/pay-loan", new PayLoanHandler(userService, accountService, loanService, transferProcessor));
+            server.createContext("/collect-loan", new CollectLoanHandler(userService, accountService, loanService, transferProcessor, bankCentralAccountNumber));
+            server.createContext("/pay-loan", new PayLoanHandler(userService, accountService, loanService, transferProcessor, bankCentralAccountNumber));
 
             // Start the server
             server.setExecutor(null); // Use the default executor
@@ -88,6 +98,7 @@ public class SimpleBankRestApiApplication {
                 return;
             }
             // Handle the request
+
             String response = "Hello, this is a simple HTTP server response!";
             exchange.sendResponseHeaders(200, response.length());
             OutputStream os = exchange.getResponseBody();

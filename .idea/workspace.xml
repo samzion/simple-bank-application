@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="06292daf-0457-4b4d-b64d-a5196b527265" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/oop/configuration.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/oop/httpHandlers/PayLoanHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/oop/httpHandlers/PayLoanHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/oop/models/requests/PayLoanRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/oop/models/requests/PayLoanRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/oop/db/DataBaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/oop/db/DataBaseConnection.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +64,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "add-configuration-file",
     "last_opened_file_path": "C:/Users/User/IdeaProjects/study",
     "onboarding.tips.debug.path": "C:/Users/DELL/source/repos/study/src/Main.java",
     "project.structure.last.edited": "Libraries",

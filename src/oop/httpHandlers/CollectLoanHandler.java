@@ -22,12 +22,13 @@ public class CollectLoanHandler extends BaseHandler implements HttpHandler {
     public AccountService accountService;
     public LoanService loanService;
     public TransferProcessor transferProcessor;
-
-    public CollectLoanHandler(UserService userService, AccountService accountService, LoanService loanService, TransferProcessor transferProcessor){
+    String bankCentralAccountNumber;
+    public CollectLoanHandler(UserService userService, AccountService accountService, LoanService loanService, TransferProcessor transferProcessor, String bankCentralAccountNumber){
         super(userService);
         this.accountService = accountService;
         this.loanService = loanService;
         this.transferProcessor = transferProcessor;
+        this.bankCentralAccountNumber = bankCentralAccountNumber;
     }
 
     public void handle (HttpExchange exchange) throws IOException {
@@ -69,10 +70,9 @@ public class CollectLoanHandler extends BaseHandler implements HttpHandler {
         }
 
         try{
-             String sourceAccountNumber = "1018521126";//Sammy Bank Central account number
         //TODO: Add sourceAccountNumber as part of the configuration that will the read in from the main method. And pass the variable into this class constructor.
-            User sourceUser = userService.getUserByAccountNumber(sourceAccountNumber);
-            AccountOperationResponse transferResponse = this.transferProcessor.transfer(sourceUser, sourceAccountNumber, collectLoanRequest.getDestinationAccountNumber(),collectLoanRequest.getLoanAmount());
+            User sourceUser = this.userService.getUserByAccountNumber(this.bankCentralAccountNumber);
+            AccountOperationResponse transferResponse = this.transferProcessor.transfer(sourceUser, bankCentralAccountNumber, collectLoanRequest.getDestinationAccountNumber(),collectLoanRequest.getLoanAmount());
             this.loanService.createLoan(destinationAccount, collectLoanRequest.getLoanAmount());
             SimpleBankRestApiApplication.writeHttpResponse(exchange, transferResponse.getStatusCode(), transferResponse.getMessage());
 
