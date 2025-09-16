@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 
 public class BaseHandler {
 
-    private UserService userService;
+    public UserService userService;
+
 
     public BaseHandler(UserService userService){
         this.userService = userService;

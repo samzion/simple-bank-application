@@ -14,35 +14,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransferProcessor {
+    private AccountService accountService;
+    private List<ITransfer> iTransferList;
 
-    public static AccountOperationResponse transfer(User user, String sourceAccountNumber, String destinationAccountNumber, double amount) throws SQLException, ClassNotFoundException {
-        AccountService accountService = new AccountService();
+    public TransferProcessor(AccountService accountService,  List<ITransfer> iTransferList){
+        this.accountService = accountService;
+        this.iTransferList = iTransferList;
+    }
+    public AccountOperationResponse transfer(User user, String sourceAccountNumber, String destinationAccountNumber, double amount) throws SQLException, ClassNotFoundException {
+
         AccountOperationResponse accountOperationResponse = new AccountOperationResponse();
-        Account sourceAccount = accountService.getAccountByUserAndAccountNumber(user,sourceAccountNumber);
+        Account sourceAccount = this.accountService.getAccountByUserAndAccountNumber(user,sourceAccountNumber);
         if(sourceAccount == null){
             accountOperationResponse.setStatusCode(404);
             accountOperationResponse.setMessage("Source account not found.");
             return accountOperationResponse;
         }
-        Account destinationAccount = accountService.confirmAccountDetails(destinationAccountNumber);
+        Account destinationAccount = this.accountService.confirmAccountDetails(destinationAccountNumber);
         if(destinationAccount == null){
             accountOperationResponse.setStatusCode(404);
             accountOperationResponse.setMessage("Destination account not found.");
             return accountOperationResponse;
         }
 
-        DefaultTransfer genericTransfer = new DefaultTransfer();
-        GTBTransfer gtbTransfer = new GTBTransfer();
-        UBATransfer ubaTransfer = new UBATransfer();
-        List<ITransfer> genericTransfers = new ArrayList<>();
-        genericTransfers.add(gtbTransfer);
-        genericTransfers.add(ubaTransfer);
-        genericTransfers.add(genericTransfer);
-
         String bank = destinationAccount.getBank();
 
-
-        for (ITransfer genericTransfer1: genericTransfers){
+        for (ITransfer genericTransfer1: this.iTransferList){
             String currentBank = genericTransfer1.getBank();
             if (bank.equals(currentBank) || currentBank.equals("generic")){
                 accountOperationResponse =  genericTransfer1.restTransfer(amount, sourceAccount, destinationAccount);

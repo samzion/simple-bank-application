@@ -2,7 +2,7 @@ package oop.models.requests;
 
 public class PayLoanRequest {
     private String sourceAccountNumber;
-    private double Amount;
+    private double amount;
 
     public String getSourceAccountNumber() {
         return sourceAccountNumber;
@@ -13,11 +13,11 @@ public class PayLoanRequest {
     }
 
     public double getAmount() {
-        return Amount;
+        return amount;
     }
 
     public void setAmount(double amount) {
-        Amount = amount;
+        this.amount = amount;
     }
 
     public static String validate(PayLoanRequest payLoanRequest) {
